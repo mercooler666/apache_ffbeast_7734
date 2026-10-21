@@ -86,7 +86,7 @@ export const DownloadsAndShopModal: React.FC<DownloadsAndShopModalProps> = ({
                     <ExternalLink className="w-3.5 h-3.5" />
                   </a>
                   <a
-                    href="https://gvl224.com/"
+                    href="https://ffbeast.gvl224.com/"
                     target="_blank"
                     rel="noreferrer"
                     className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 transition shrink-0"

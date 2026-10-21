@@ -48,7 +48,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <li><a href="https://t.me/aldo_apache_7734" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1 font-semibold text-sky-700"><Send className="w-3 h-3 text-sky-500" /><span>Telegram: @aldo_apache_7734</span><ExternalLink className="w-3 h-3 text-sky-400" /></a></li>
               <li><a href="https://discord.gg/5ZKD46zQSU" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Discord сервер (1,000+ участников)</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
               <li><a href="https://github.com/ffbeast" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>GitHub репозитории</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
-              <li><a href="https://gvl224.com/" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Кастомные ручки GVL224</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
+              <li><a href="https://ffbeast.gvl224.com/" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Кастомные ручки GVL224</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
               <li><a href="mailto:ffbeast.devices@gmail.com" className="hover:text-sky-600 transition flex items-center gap-1"><Mail className="w-3 h-3 text-slate-400" /><span>ffbeast.devices@gmail.com</span></a></li>
             </ul>
           </div>
