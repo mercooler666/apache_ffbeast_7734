@@ -178,15 +178,27 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="aspect-[4/3] rounded-2xl bg-slate-900 border border-slate-200 flex items-center justify-center overflow-hidden relative shadow-inner">
                   {isFlight ? (
                     <img
-                      src="/assets/images/joystick_rotating.gif"
+                      src="./assets/images/joystick_rotating.gif"
                       alt="FFBeast Flight Controls Base Rotating"
                       className="w-full h-full object-contain filter contrast-110"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes('ffbeast.github.io')) {
+                          target.src = 'https://ffbeast.github.io/assets/images/joystick_rotating.gif';
+                        }
+                      }}
                     />
                   ) : (
                     <img
-                      src="/assets/images/wheel_crop.jpg"
+                      src="./assets/images/wheel_crop.jpg"
                       alt="FFBeast Direct Drive Wheel"
                       className="w-full h-full object-cover filter brightness-95 contrast-105"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes('ffbeast.github.io')) {
+                          target.src = 'https://ffbeast.github.io/assets/images/wheel_crop.jpg';
+                        }
+                      }}
                     />
                   )}
 
