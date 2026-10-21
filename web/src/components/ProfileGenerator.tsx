@@ -645,7 +645,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {/* Option 1: Хардкор */}
+                {/* Option 1: Хардкор (Максимальный реализм) */}
                 <div
                   onClick={() => {
                     setFlightStyle('hardcore');
@@ -666,19 +666,19 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200">
-                        100% сил
+                        Максимальный реализм (РЛЭ)
                       </span>
                     </div>
                     <div className="text-lg font-black text-slate-900 mb-1">
-                      {maxForceKg.toFixed(1)} кг
+                      {maxForceKg.toFixed(1)} кг (1:1)
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Максимальные усилия, максимум реалистичности. Тяжелое сопротивление и полная отдача пушки/сваливания.
+                      Аутентичные усилия по РЛЭ конкретного самолета, честная кинематика проводки (бустеры/механика/ЭДСУ), точный скоростной напор и бафтинг строго на срывных углах атаки без искусственного выкручивания сил.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
-                    <span>Вибрации:</span>
-                    <strong className="text-red-700 font-bold">100% Реализм</strong>
+                    <span>Физика:</span>
+                    <strong className="text-red-700 font-bold">1:1 к РЛЭ (Без завышения)</strong>
                   </div>
                 </div>
 
@@ -703,14 +703,14 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        50% сил
+                        50% усилий
                       </span>
                     </div>
                     <div className="text-lg font-black text-slate-900 mb-1">
                       {(maxForceKg * 0.5).toFixed(1)} кг
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Наполовину убрать усилия. Сбалансированный комфорт для затяжных боев без усталости рук.
+                      Наполовину убрать усилия для комфортных длительных вылетов без усталости рук при сохранении всей информативности эффектов.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
@@ -758,32 +758,55 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
               </div>
             </div>
 
-            {/* Step 6: Primary Action - Сгенерировать профиль */}
-            <div className="bg-gradient-to-r from-sky-600 to-blue-700 rounded-3xl p-6 shadow-lg shadow-sky-600/20 text-white space-y-3">
+            {/* Step 6: Primary Action - Сгенерировать профиль & Скачать */}
+            <div className="bg-gradient-to-r from-sky-600 to-blue-700 rounded-3xl p-6 shadow-lg shadow-sky-600/20 text-white space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-sky-200" />
-                    <h3 className="text-base font-bold">Готовы рассчитать профиль?</h3>
+                    <h3 className="text-base font-bold">Шаг 6: Генерация профиля</h3>
                   </div>
                   <p className="text-xs text-sky-100 mt-1">
-                    Сформирует 11-точечные S-кривые под усилие <strong className="text-white font-mono">{displayResult.effectivePitchForceKg} кг</strong> ({styleLabel}), применит Smart Damper и подготовит JSON.
+                    Рассчитает кинематику под усилие <strong className="text-white font-mono">{displayResult.effectivePitchForceKg} кг</strong> ({styleLabel}), применит Smart Damper и подготовит профиль к выгрузке.
                   </p>
                 </div>
 
                 <button
                   onClick={handleGenerate}
-                  className="px-6 py-3 rounded-2xl bg-white text-sky-900 hover:bg-sky-50 font-black text-sm shadow-md transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
+                  className="px-6 py-3.5 rounded-2xl bg-white text-sky-900 hover:bg-sky-50 font-black text-sm shadow-md transition cursor-pointer shrink-0 flex items-center justify-center gap-2"
                 >
                   <Sparkles className="w-4 h-4 text-sky-600" />
-                  <span>{hasGenerated && !isDirty ? 'Профиль сгенерирован ✓' : 'Сгенерировать профиль'}</span>
+                  <span>{hasGenerated && !isDirty ? 'Сгенерировать заново' : 'Сгенерировать профиль'}</span>
                 </button>
               </div>
+
+              {/* Кнопка "Скачать" появляется сразу ПОСЛЕ генерации */}
+              {hasGenerated && !isDirty && (
+                <div className="pt-4 border-t border-white/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white/10 p-4 rounded-2xl transition-all animate-fadeIn">
+                  <div>
+                    <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                      <span>Профиль успешно сгенерирован и откалиброван!</span>
+                    </div>
+                    <div className="text-[11px] text-sky-100 mt-0.5">
+                      Файл готов к загрузке в папку <code className="bg-sky-900/60 px-1 py-0.5 rounded text-white font-mono">effect_profiles/</code> программы FFBeast Commander.
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={handleDownload}
+                    className="px-6 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm shadow-lg shadow-emerald-900/30 transition cursor-pointer shrink-0 flex items-center justify-center gap-2 transform active:scale-95"
+                  >
+                    <Download className="w-4 h-4" />
+                    <span>Скачать .JSON профиль ({displayResult.effectivePitchForceKg} кг)</span>
+                  </button>
+                </div>
+              )}
 
               {isDirty && hasGenerated && (
                 <div className="text-[11px] text-amber-200 flex items-center gap-1.5 pt-1">
                   <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                  <span>Параметры были изменены. Нажмите «Сгенерировать профиль», чтобы обновить JSON файл.</span>
+                  <span>Параметры были изменены. Нажмите «Сгенерировать профиль», чтобы обновить JSON перед скачиванием.</span>
                 </div>
               )}
             </div>
@@ -813,7 +836,12 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
 
               {/* Big Download Button */}
               <button
-                onClick={handleDownload}
+                onClick={() => {
+                  if (isDirty) {
+                    handleGenerate();
+                  }
+                  handleDownload();
+                }}
                 className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-sm shadow-md shadow-emerald-600/20 transition cursor-pointer"
               >
                 <Download className="w-5 h-5" />
