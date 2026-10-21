@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ProductMode, PageRoute } from '../types';
-import { ShieldCheck, Zap, Gauge, ArrowRight, Wrench, Sparkles, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Zap, Gauge, ArrowRight, Wrench, Sparkles, ShoppingBag, ExternalLink } from 'lucide-react';
 
 interface HeroProps {
   mode: ProductMode;
@@ -100,22 +100,35 @@ export const Hero: React.FC<HeroProps> = ({
 
             {/* Primary Action Buttons */}
             <div className="flex flex-wrap items-center gap-3 pt-4">
-              <button
-                onClick={() => onNavigate('profile-wizard')}
-                className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 shadow-xl shadow-sky-600/25 transition cursor-pointer"
-              >
-                <Sparkles className="w-4 h-4 text-amber-300 animate-spin-slow" />
-                <span>Конструктор профилей (DCS & WT)</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
+              {isFlight ? (
+                <>
+                  <button
+                    onClick={() => onNavigate('profile-wizard')}
+                    className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 shadow-xl shadow-sky-600/25 transition cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-300 animate-spin-slow" />
+                    <span>Конструктор профилей (DCS & WT)</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
 
-              <button
-                onClick={() => onNavigate('configurator')}
-                className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-sm transition cursor-pointer"
-              >
-                <Wrench className="w-4 h-4 text-sky-600" />
-                <span>Калькулятор сборки железа</span>
-              </button>
+                  <button
+                    onClick={() => onNavigate('configurator')}
+                    className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-sm transition cursor-pointer"
+                  >
+                    <Wrench className="w-4 h-4 text-sky-600" />
+                    <span>Калькулятор сборки железа</span>
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => onNavigate('configurator')}
+                  className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 shadow-xl shadow-red-600/25 transition cursor-pointer"
+                >
+                  <Wrench className="w-4 h-4 text-white" />
+                  <span>Калькулятор сборки руля (BOM)</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              )}
 
               <button
                 onClick={onOpenShop}
@@ -156,79 +169,94 @@ export const Hero: React.FC<HeroProps> = ({
 
           </div>
 
-          {/* Right Column: Hardware Showcase / Interactive Visual */}
+          {/* Right Column: Hardware Showcase / Interactive Visual (Links to ffbeast.github.io documentation) */}
           <div className="lg:col-span-5 relative">
-            <div className="relative rounded-3xl p-2 bg-gradient-to-b from-sky-200/60 via-white to-slate-200 shadow-2xl">
-              <div className="bg-white rounded-[22px] overflow-hidden border border-slate-200 p-6 relative">
-                
-                {/* Status Badge in Showcase */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800">
-                      {isFlight ? 'FFBeast Base V5 (All-Metal)' : 'FFBeast DD Base (15 Nm)'}
-                    </span>
-                  </div>
-                  <span className="text-[11px] font-mono text-sky-800 bg-sky-50 px-2.5 py-0.5 rounded-full border border-sky-200 font-semibold">
-                    Dual ODrive 3.6 FOC
-                  </span>
-                </div>
-
-                {/* Main Media Preview */}
-                <div className="aspect-[4/3] rounded-2xl bg-slate-900 border border-slate-200 flex items-center justify-center overflow-hidden relative shadow-inner">
-                  {isFlight ? (
-                    <img
-                      src="./assets/images/joystick_rotating.gif"
-                      alt="FFBeast Flight Controls Base Rotating"
-                      className="w-full h-full object-contain filter contrast-110"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (!target.src.includes('ffbeast.github.io')) {
-                          target.src = 'https://ffbeast.github.io/assets/images/joystick_rotating.gif';
-                        }
-                      }}
-                    />
-                  ) : (
-                    <img
-                      src="./assets/images/wheel_crop.jpg"
-                      alt="FFBeast Direct Drive Wheel"
-                      className="w-full h-full object-cover filter brightness-95 contrast-105"
-                      onError={(e) => {
-                        const target = e.currentTarget;
-                        if (!target.src.includes('ffbeast.github.io')) {
-                          target.src = 'https://ffbeast.github.io/assets/images/wheel_crop.jpg';
-                        }
-                      }}
-                    />
-                  )}
-
-                  {/* Overlay live specs badge */}
-                  <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3 flex items-center justify-between text-xs text-slate-800 shadow-md">
-                    <div>
-                      <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Механический узел</div>
-                      <div className="text-slate-900 font-black">{isFlight ? 'Стальной подвес + 9 подшипников' : 'Стальной вал Direct Drive'}</div>
+            <a
+              href={isFlight ? "https://ffbeast.github.io/docs/en/joystick.html" : "https://ffbeast.github.io/docs/en/wheel.html"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block group cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-3xl"
+              title={isFlight ? "Открыть документацию по джойстику на ffbeast.github.io (откроется в новой вкладке)" : "Открыть документацию по рулевой базе на ffbeast.github.io (откроется в новой вкладке)"}
+            >
+              <div className="relative rounded-3xl p-2 bg-gradient-to-b from-sky-200/60 via-white to-slate-200 shadow-2xl transition-all duration-300 group-hover:shadow-sky-500/25 group-hover:scale-[1.015]">
+                <div className="bg-white rounded-[22px] overflow-hidden border border-slate-200 p-6 relative">
+                  
+                  {/* Status Badge in Showcase */}
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800 group-hover:text-sky-600 transition-colors">
+                        {isFlight ? 'FFBeast Base V5 (All-Metal)' : 'FFBeast DD Base (15 Nm)'}
+                      </span>
                     </div>
-                    <div className="text-right">
-                      <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Точность датчика</div>
-                      <div className="text-sky-600 font-mono font-black">20,480 CPR (AMT10E2)</div>
+                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-sky-800 bg-sky-50 group-hover:bg-sky-100 px-2.5 py-1 rounded-full border border-sky-200 group-hover:border-sky-300 font-semibold transition-colors shadow-xs">
+                      <span>ffbeast.github.io</span>
+                      <ExternalLink className="w-3 h-3 text-sky-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                     </div>
                   </div>
-                </div>
 
-                {/* Sub features bar */}
-                <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Физика DirectInput</div>
-                    <div className="font-bold text-slate-900 mt-0.5">Скоростной напор + Шейкеры + Трим</div>
-                  </div>
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                    <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Питание</div>
-                    <div className="font-bold text-slate-900 mt-0.5">24V - 48V (MeanWell / Серверный)</div>
-                  </div>
-                </div>
+                  {/* Main Media Preview */}
+                  <div className="aspect-[4/3] rounded-2xl bg-slate-900 border border-slate-200 flex items-center justify-center overflow-hidden relative shadow-inner">
+                    {isFlight ? (
+                      <img
+                        src="./assets/images/joystick_rotating.gif"
+                        alt="FFBeast Flight Controls Base Rotating"
+                        className="w-full h-full object-contain filter contrast-110 group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.src.includes('ffbeast.github.io')) {
+                            target.src = 'https://ffbeast.github.io/assets/images/joystick_rotating.gif';
+                          }
+                        }}
+                      />
+                    ) : (
+                      <img
+                        src="./assets/images/wheel_crop.jpg"
+                        alt="FFBeast Direct Drive Wheel"
+                        className="w-full h-full object-cover filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-500"
+                        onError={(e) => {
+                          const target = e.currentTarget;
+                          if (!target.src.includes('ffbeast.github.io')) {
+                            target.src = 'https://ffbeast.github.io/assets/images/wheel_crop.jpg';
+                          }
+                        }}
+                      />
+                    )}
 
+                    {/* Overlay live specs badge */}
+                    <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3 flex items-center justify-between text-xs text-slate-800 shadow-md">
+                      <div>
+                        <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Механический узел</div>
+                        <div className="text-slate-900 font-black">{isFlight ? 'Стальной подвес + 9 подшипников' : 'Стальной вал Direct Drive'}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Точность датчика</div>
+                        <div className="text-sky-600 font-mono font-black">20,480 CPR (AMT10E2)</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Sub features bar */}
+                  <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                      <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Физика DirectInput</div>
+                      <div className="font-bold text-slate-900 mt-0.5">Скоростной напор + Шейкеры + Трим</div>
+                    </div>
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                      <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Питание</div>
+                      <div className="font-bold text-slate-900 mt-0.5">24V - 48V (MeanWell / Серверный)</div>
+                    </div>
+                  </div>
+
+                  {/* Link indicator footer */}
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700">
+                    <span>Открыть документацию на официальном сайте ffbeast.github.io</span>
+                    <ExternalLink className="w-3.5 h-3.5" />
+                  </div>
+
+                </div>
               </div>
-            </div>
+            </a>
           </div>
 
         </div>

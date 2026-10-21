@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ProductMode, PageRoute } from '../types';
-import { Plane, Car, Wrench, Download, ShoppingBag, ExternalLink, Sparkles, Home, Send } from 'lucide-react';
+import { Plane, Car, Wrench, Download, ShoppingBag, ExternalLink, Sparkles, Send } from 'lucide-react';
 
 interface NavbarProps {
   mode: ProductMode;
@@ -26,18 +26,30 @@ export const Navbar: React.FC<NavbarProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           
-          {/* Logo & Brand */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => onNavigate('home')}>
+          {/* Logo & Brand (Click to return Home) */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer group select-none transition-transform hover:scale-[1.02] active:scale-[0.98]" 
+            onClick={() => onNavigate('home')}
+            title="На главную FFBEAST"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onNavigate('home');
+              }
+            }}
+          >
             <div className={`w-11 h-11 rounded-xl flex items-center justify-center font-black text-xl tracking-tighter transition-all duration-300 shadow-md ${
               isFlight 
-                ? 'bg-gradient-to-br from-sky-500 to-blue-700 text-white shadow-sky-500/25' 
-                : 'bg-gradient-to-br from-red-500 to-amber-600 text-white shadow-red-500/25'
+                ? 'bg-gradient-to-br from-sky-500 to-blue-700 text-white shadow-sky-500/25 group-hover:shadow-sky-500/40' 
+                : 'bg-gradient-to-br from-red-500 to-amber-600 text-white shadow-red-500/25 group-hover:shadow-red-500/40'
             }`}>
               FB
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-xl tracking-tight text-slate-900">FFBEAST</span>
+                <span className="font-extrabold text-xl tracking-tight text-slate-900 group-hover:text-sky-600 transition-colors">FFBEAST</span>
                 <span className="text-[10px] uppercase px-2 py-0.5 rounded-full font-mono font-bold tracking-widest text-sky-800 bg-sky-100 border border-sky-200">
                   AEROSPACE FFB
                 </span>
@@ -74,33 +86,22 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Navigation Links */}
           <div className="flex items-center gap-2 text-sm font-semibold text-slate-600">
-            
-            <button
-              onClick={() => onNavigate('home')}
-              className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer ${
-                currentPage === 'home' 
-                  ? 'text-sky-700 bg-sky-50 font-bold border border-sky-100' 
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <Home className="w-4 h-4" />
-              <span>Главная</span>
-            </button>
-
-            <button
-              onClick={() => onNavigate('profile-wizard')}
-              className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer relative ${
-                currentPage === 'profile-wizard' 
-                  ? 'text-sky-700 bg-sky-50 font-bold border border-sky-100' 
-                  : 'hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <Sparkles className="w-4 h-4 text-sky-600" />
-              <span>Конструктор профилей</span>
-              <span className="bg-sky-500 text-white text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold">
-                DCS & WT
-              </span>
-            </button>
+            {isFlight && (
+              <button
+                onClick={() => onNavigate('profile-wizard')}
+                className={`px-3 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer relative ${
+                  currentPage === 'profile-wizard' 
+                    ? 'text-sky-700 bg-sky-50 font-bold border border-sky-100' 
+                    : 'hover:text-slate-900 hover:bg-slate-50'
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-sky-600" />
+                <span>Конструктор профилей</span>
+                <span className="bg-sky-500 text-white text-[9px] font-mono px-1.5 py-0.2 rounded-full font-bold">
+                  DCS & WT
+                </span>
+              </button>
+            )}
 
             <button
               onClick={() => onNavigate('configurator')}

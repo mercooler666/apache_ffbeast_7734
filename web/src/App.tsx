@@ -55,7 +55,7 @@ export const App: React.FC = () => {
             />
 
             {/* Prominent Banners for Profile Wizard & Hardware Configurator */}
-            <PromoBanners onNavigate={navigateTo} />
+            <PromoBanners mode={mode} onNavigate={navigateTo} />
 
             {/* Aerodynamics & Telemetry Showcase */}
             <SoftwareShowcase mode={mode} />
@@ -79,7 +79,7 @@ export const App: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <Footer onNavigate={navigateTo} />
+      <Footer mode={mode} onNavigate={navigateTo} />
 
       {/* Downloads & Shop Modal */}
       <DownloadsAndShopModal

@@ -1,12 +1,15 @@
 import React from 'react';
-import type { PageRoute } from '../types';
+import type { PageRoute, ProductMode } from '../types';
 import { ExternalLink, Mail, Send } from 'lucide-react';
 
 interface FooterProps {
+  mode?: ProductMode;
   onNavigate?: (route: PageRoute) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+export const Footer: React.FC<FooterProps> = ({ mode = 'flight', onNavigate }) => {
+  const isFlight = mode === 'flight';
+
   return (
     <footer className="bg-white border-t border-slate-200 py-12 text-xs text-slate-500">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,7 +34,11 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <ul className="space-y-1.5">
               {onNavigate && (
                 <>
-                  <li><button onClick={() => onNavigate('profile-wizard')} className="hover:text-sky-600 transition cursor-pointer">Конструктор профилей DCS & WT</button></li>
+                  {isFlight ? (
+                    <li><button onClick={() => onNavigate('profile-wizard')} className="hover:text-sky-600 transition cursor-pointer">Конструктор профилей DCS & WT</button></li>
+                  ) : (
+                    <li><a href="https://ffbeast.github.io/docs/en/wheel.html" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Документация руля Direct Drive</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
+                  )}
                   <li><button onClick={() => onNavigate('configurator')} className="hover:text-sky-600 transition cursor-pointer">Калькулятор сборки и BOM</button></li>
                 </>
               )}
