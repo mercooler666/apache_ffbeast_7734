@@ -1,0 +1,160 @@
+{
+    "effects": {
+        "ailerons": {
+            "aoa_shaker": {
+                "active": true,
+                "aoa": {
+                    "exp": 75,
+                    "max": 16,
+                    "min": 12
+                },
+                "frequency": {
+                    "exp": 0,
+                    "max": 12,
+                    "min": 5
+                },
+                "speed": {
+                    "exp": 0,
+                    "max": 500,
+                    "min": 50
+                },
+                "total_effect_strength": 30
+            },
+            "direct_x": {
+                "active": true,
+                "force": 10,
+                "periodic": 20,
+                "total_effect_strength": 100,
+                "trimmer": 100
+            },
+            "flaps_shaker": {
+                "active": true,
+                "frequency": {
+                    "exp": 0,
+                    "max": 12,
+                    "min": 8
+                },
+                "speed": {
+                    "exp": 0,
+                    "max": 250,
+                    "min": 10
+                },
+                "total_effect_strength": 7
+            },
+            "gear_shaker": {
+                "active": true,
+                "frequency": {
+                    "exp": 0,
+                    "max": 17,
+                    "min": 0
+                },
+                "speed": {
+                    "exp": -30,
+                    "max": 250,
+                    "min": 1
+                },
+                "total_effect_strength": 12
+            },
+            "landing_jolt": {
+                "active": true,
+                "effect_time": 400,
+                "frequency": {
+                    "exp": 0,
+                    "max": 20,
+                    "min": 10
+                },
+                "speed": {
+                    "exp": -100,
+                    "max": 200,
+                    "min": 0
+                },
+                "total_effect_strength": 100
+            },
+            "on_ground_shaker": {
+                "active": true,
+                "frequency": {
+                    "exp": -15,
+                    "max": 12,
+                    "min": 7
+                },
+                "speed": {
+                    "exp": -75,
+                    "max": 200,
+                    "min": 5
+                },
+                "total_effect_strength": 20
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 93,
+                "static_dampening": 77,
+                "total_effect_strength": 100
+            }
+        },
+        "elevator": {
+            "airflow_spring": {
+                "active": true,
+                "airspeed_force": 30,
+                "attenuation_end_airspeed": 1000,
+                "attenuation_start_airspeed": 252,
+                "attenuation_strength": 45,
+                "local_aoa_influence_strength": 12,
+                "thrust_force": 0,
+                "total_effect_strength": 40
+            },
+            "direct_x": {
+                "active": true,
+                "force": 10,
+                "periodic": 20,
+                "total_effect_strength": 35,
+                "trimmer": 75
+            },
+            "landing_jolt": {
+                "active": true,
+                "effect_time": 250,
+                "frequency": {
+                    "exp": 0,
+                    "max": 17,
+                    "min": 8
+                },
+                "speed": {
+                    "exp": -100,
+                    "max": 200,
+                    "min": 0
+                },
+                "total_effect_strength": 100
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 93,
+                "static_dampening": 10,
+                "total_effect_strength": 55
+            }
+        },
+        "rudder": {
+            "airflow_spring": {
+                "active": true,
+                "airspeed_force": 60,
+                "attenuation_end_airspeed": 1000,
+                "attenuation_start_airspeed": 255,
+                "attenuation_strength": 70,
+                "local_aoa_influence_strength": 0,
+                "thrust_force": 0,
+                "total_effect_strength": 100
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 250,
+                "static_dampening": 60,
+                "total_effect_strength": 100
+            }
+        },
+        "throttle_collective": {
+        }
+    },
+    "metadata": {
+        "comment": "",
+        "flight_data_source": 2,
+        "flight_module": "A-4E-C"
+    }
+}

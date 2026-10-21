@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+web/node_modules/
+
+# Production builds
+web/dist/
+dist/
+
+# Source site archive mirror (downloaded reference)
+source_site/
+
+# Logs and environment
+*.log
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.DS_Store

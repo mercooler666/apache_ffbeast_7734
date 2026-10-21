@@ -1,0 +1,122 @@
+{
+    "effects": {
+        "ailerons": {
+            "direct_x": {
+                "active": true,
+                "force": 20,
+                "periodic": 15,
+                "total_effect_strength": 28,
+                "trimmer": 100
+            },
+            "landing_jolt": {
+                "active": true,
+                "effect_time": 400,
+                "frequency": {
+                    "exp": -100,
+                    "max": 8,
+                    "min": 5
+                },
+                "speed": {
+                    "exp": -100,
+                    "max": 1,
+                    "min": 0
+                },
+                "total_effect_strength": 80
+            },
+            "on_ground_shaker": {
+                "active": true,
+                "frequency": {
+                    "exp": -15,
+                    "max": 12,
+                    "min": 7
+                },
+                "speed": {
+                    "exp": -75,
+                    "max": 200,
+                    "min": 15
+                },
+                "total_effect_strength": 20
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 100,
+                "static_dampening": 75,
+                "total_effect_strength": 100
+            }
+        },
+        "elevator": {
+            "direct_x": {
+                "active": true,
+                "force": 20,
+                "periodic": 15,
+                "total_effect_strength": 25,
+                "trimmer": 100
+            },
+            "landing_jolt": {
+                "active": true,
+                "effect_time": 400,
+                "frequency": {
+                    "exp": -100,
+                    "max": 8,
+                    "min": 5
+                },
+                "speed": {
+                    "exp": -100,
+                    "max": 1,
+                    "min": 0
+                },
+                "total_effect_strength": 100
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 100,
+                "static_dampening": 75,
+                "total_effect_strength": 100
+            }
+        },
+        "rudder": {
+            "landing_jolt": {
+                "active": true,
+                "effect_time": 280,
+                "frequency": {
+                    "exp": 19,
+                    "max": 8,
+                    "min": 5
+                },
+                "speed": {
+                    "exp": -60,
+                    "max": 1,
+                    "min": 0
+                },
+                "total_effect_strength": 100
+            },
+            "on_ground_shaker": {
+                "active": true,
+                "frequency": {
+                    "exp": -15,
+                    "max": 12,
+                    "min": 7
+                },
+                "speed": {
+                    "exp": -75,
+                    "max": 100,
+                    "min": 15
+                },
+                "total_effect_strength": 40
+            },
+            "smart_damper": {
+                "active": true,
+                "dynamic_dampening": 115,
+                "static_dampening": 200,
+                "total_effect_strength": 100
+            }
+        },
+        "throttle_collective": {
+        }
+    },
+    "metadata": {
+        "comment": "v002",
+        "flight_data_source": 2,
+        "flight_module": "AH-64D_BLK_II"
+    }
+}
