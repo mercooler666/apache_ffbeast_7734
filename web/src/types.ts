@@ -11,6 +11,12 @@ export type AircraftCategory =
   | 'helicopter'
   | 'general_aviation';
 
+export type ControlArchitecture = 
+  | 'mechanical' 
+  | 'hydromechanical_boosted' 
+  | 'fly_by_wire' 
+  | 'helicopter_force_trim';
+
 export interface AircraftPreset {
   id: string;
   name: string;
@@ -26,6 +32,25 @@ export interface AircraftPreset {
   engineType: string;
   description: string;
   isHelicopter?: boolean;
+
+  // Authentic RLE Flight Manual Specifications
+  controlArchitecture?: ControlArchitecture;
+  controlSystemName?: string;
+  rlePitchForceKg?: number;
+  rleRollForceKg?: number;
+  rleGGradient?: string;
+  rleStickTravel?: string;
+  rleDocument?: string;
+  aoaBuffetOnsetDeg?: number;
+  vStallKmh?: number;
+  trimMethod?: string;
+  ffbEffectBreakdown?: {
+    pitchSpringEffect: string;
+    dampeningEffect: string;
+    trimEffect: string;
+    shakerEffects: string;
+    joltsEffects: string;
+  };
 }
 
 export type HardwareRevision = 'V5' | 'V4' | 'DirectDrive';

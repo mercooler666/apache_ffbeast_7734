@@ -43,7 +43,10 @@ import {
   Flame,
   Shield,
   ZapOff,
-  Wind
+  Wind,
+  BookOpen,
+  Cpu,
+  FileText
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -90,6 +93,9 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
     setSearchQuery('');
     const newDefaults = getDefaultEffectsForAircraft(ac);
     setSelectedEffects(newDefaults);
+    if (ac.rlePitchForceKg) {
+      setMaxForceKg(ac.rlePitchForceKg);
+    }
     setIsDirty(true);
   };
 
@@ -406,6 +412,104 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                     {selectedAircraft.description}
                   </p>
                 </div>
+              </div>
+
+              {/* Engineering RLE Passport Card */}
+              <div className="bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 shadow-md space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-4 h-4 text-sky-400" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
+                      Инженерный паспорт ЛА (РЛЭ / NATOPS / ТО)
+                    </span>
+                  </div>
+                  {selectedAircraft.controlArchitecture && (
+                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800">
+                      {selectedAircraft.controlArchitecture === 'mechanical' && 'Прямая механика'}
+                      {selectedAircraft.controlArchitecture === 'hydromechanical_boosted' && 'Бустерная гидравлика'}
+                      {selectedAircraft.controlArchitecture === 'fly_by_wire' && 'ЭДСУ / Fly-By-Wire'}
+                      {selectedAircraft.controlArchitecture === 'helicopter_force_trim' && 'Вертолетная (Force Trim)'}
+                    </span>
+                  )}
+                </div>
+
+                {/* Real RLE Document Source */}
+                {selectedAircraft.rleDocument && (
+                  <div className="text-[11px] text-slate-300 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
+                    <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                    <div>
+                      <span className="text-slate-400 font-semibold block text-[10px] uppercase tracking-wide">Документация и первоисточник:</span>
+                      <strong className="text-slate-200 font-medium">{selectedAircraft.rleDocument}</strong>
+                    </div>
+                  </div>
+                )}
+
+                {/* System Name */}
+                {selectedAircraft.controlSystemName && (
+                  <div className="text-[11px] text-slate-300 leading-snug">
+                    <span className="text-slate-400 font-semibold text-[10px] uppercase tracking-wide block mb-0.5">Система управления:</span>
+                    {selectedAircraft.controlSystemName}
+                  </div>
+                )}
+
+                {/* Specs Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
+                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block">Усилие РЛЭ</span>
+                    <strong className="text-emerald-400 font-mono text-xs">{selectedAircraft.rlePitchForceKg || maxForceKg} кгс</strong>
+                    <span className="text-[9px] text-slate-500 block">тангаж (крен: {selectedAircraft.rleRollForceKg || (maxForceKg * 0.6).toFixed(1)} кгс)</span>
+                  </div>
+
+                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block">Градиент G</span>
+                    <strong className="text-sky-300 font-mono text-xs">{selectedAircraft.rleGGradient || '2.5 – 3.5 кгс/G'}</strong>
+                    <span className="text-[9px] text-slate-500 block">усилие на 1 ед. G</span>
+                  </div>
+
+                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block">Ход РУС</span>
+                    <strong className="text-amber-300 font-mono text-xs truncate block">{selectedAircraft.rleStickTravel || 'Стандарт'}</strong>
+                    <span className="text-[9px] text-slate-500 block">в реальной кабине</span>
+                  </div>
+
+                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
+                    <span className="text-[10px] text-slate-400 block">Бафтинг (срыв)</span>
+                    <strong className="text-red-400 font-mono text-xs">α ≥ {selectedAircraft.aoaBuffetOnsetDeg || (selectedAircraft.aoaStallDeg * 0.8).toFixed(1)}°</strong>
+                    <span className="text-[9px] text-slate-500 block">сваливание {selectedAircraft.aoaStallDeg}°</span>
+                  </div>
+                </div>
+
+                {/* How FFBeast Achieves 1:1 Physics */}
+                {selectedAircraft.ffbEffectBreakdown && (
+                  <div className="pt-2 border-t border-slate-800">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-1.5 flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5" />
+                      <span>Какими эффектами FFBeast воспроизводится физика 1:1:</span>
+                    </div>
+                    <div className="space-y-1.5 text-[11px] text-slate-300">
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-mono font-bold shrink-0">⚙️ Пружины:</span>
+                        <span>{selectedAircraft.ffbEffectBreakdown.pitchSpringEffect}</span>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-mono font-bold shrink-0">💧 Демпферы:</span>
+                        <span>{selectedAircraft.ffbEffectBreakdown.dampeningEffect}</span>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-mono font-bold shrink-0">🎚️ Триммер:</span>
+                        <span>{selectedAircraft.ffbEffectBreakdown.trimEffect}</span>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-mono font-bold shrink-0">⚡ Шейкеры:</span>
+                        <span>{selectedAircraft.ffbEffectBreakdown.shakerEffects}</span>
+                      </div>
+                      <div className="flex items-start gap-1.5">
+                        <span className="text-sky-400 font-mono font-bold shrink-0">💥 Импульсы:</span>
+                        <span>{selectedAircraft.ffbEffectBreakdown.joltsEffects}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

@@ -12,8 +12,9 @@ import type {
   AircraftKeyMarker,
   AircraftEffortCurveData
 } from '../types';
+import { getAircraftRleData } from './aircraftRleDatabase';
 
-export const AIRCRAFT_DATABASE: AircraftPreset[] = [
+const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
   // ==========================================
   // DCS WORLD: MODERN JETS
   // ==========================================
@@ -925,6 +926,14 @@ export const AIRCRAFT_DATABASE: AircraftPreset[] = [
   }
 ];
 
+export const AIRCRAFT_DATABASE: AircraftPreset[] = RAW_AIRCRAFT_DATABASE.map(ac => {
+  const rle = getAircraftRleData(ac.id, ac.category, ac.isHelicopter);
+  return {
+    ...ac,
+    ...rle
+  };
+});
+
 export const MOTOR_RATINGS: Record<MotorType, { name: string; maxTorqueNm: number }> = {
   hoverboard_30mm: { name: 'Hoverboard BLDC (30mm stator)', maxTorqueNm: 15.0 },
   hoverboard_25mm: { name: 'Hoverboard BLDC (25mm stator)', maxTorqueNm: 12.7 },
@@ -1572,9 +1581,17 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
   let shakerStrengthFactor = 1.0;
   let stickVibrationsEnabled = true;
 
-  if (flightStyle === 'casual') {
-    // "Казуал" - наполовину убрать усилия
-    effectivePitchForceKg = Number((config.maxForceKg * 0.5).toFixed(1));
+  if (flightStyle === 'hardcore') {
+    // "Хардкор" - честный максимальный реализм 1:1 по РЛЭ самолета
+    // Если в РЛЭ указано усилие (например 14.5 кг для Су-27, 22 кг для P-51, 3.5 кг для вертолета),
+    // на ладонь летчика транслируется реальная аэродинамическая нагрузка
+    effectivePitchForceKg = aircraft.rlePitchForceKg || config.maxForceKg;
+    shakerStrengthFactor = 1.0;
+    stickVibrationsEnabled = true;
+  } else if (flightStyle === 'casual') {
+    // "Казуал" - наполовину убрать усилия от базового уровня РЛЭ
+    const baseForce = aircraft.rlePitchForceKg || config.maxForceKg;
+    effectivePitchForceKg = Number((baseForce * 0.5).toFixed(1));
     shakerStrengthFactor = 0.6;
     stickVibrationsEnabled = true;
   } else if (flightStyle === 'aerobatic') {
