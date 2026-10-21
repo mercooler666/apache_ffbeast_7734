@@ -217,7 +217,7 @@ export const HardwareConfigurator: React.FC<HardwareConfiguratorProps> = ({ mode
                 </span>
                 <div className="grid grid-cols-3 gap-3">
                   {[
-                    { id: 'none', title: 'Настольный (0 мм)', desc: 'Прямая посадка ручки. Быстрый отклик.' },
+                    { id: 'none', title: 'Без удлинителя (0 мм)', desc: 'Прямая посадка ручки. Быстрый отклик.' },
                     { id: '100mm', title: 'Центральный (+100 мм)', desc: 'Стандартный кронштейн. Оптимальный баланс.' },
                     { id: '200mm', title: 'Напольный (+200 мм)', desc: 'Реалистичный ход настоящего истребителя.' }
                   ].map(ex => (

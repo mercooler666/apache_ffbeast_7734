@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PageRoute } from '../types';
-import { ExternalLink, Mail } from 'lucide-react';
+import { ExternalLink, Mail, Send } from 'lucide-react';
 
 interface FooterProps {
   onNavigate?: (route: PageRoute) => void;
@@ -44,6 +44,8 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
           <div className="space-y-2">
             <div className="text-slate-900 font-bold uppercase tracking-wider text-xs">Сообщество и поддержка</div>
             <ul className="space-y-1.5">
+              <li><a href="https://t.me/FAQFFB" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1 font-semibold text-sky-700"><Send className="w-3 h-3 text-sky-500" /><span>Telegram канал FAQ FFB</span><ExternalLink className="w-3 h-3 text-sky-400" /></a></li>
+              <li><a href="https://t.me/aldo_apache_7734" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1 font-semibold text-sky-700"><Send className="w-3 h-3 text-sky-500" /><span>Telegram: @aldo_apache_7734</span><ExternalLink className="w-3 h-3 text-sky-400" /></a></li>
               <li><a href="https://discord.gg/5ZKD46zQSU" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Discord сервер (1,000+ участников)</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
               <li><a href="https://github.com/ffbeast" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>GitHub репозитории</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
               <li><a href="https://gvl224.com/" target="_blank" rel="noreferrer" className="hover:text-sky-600 transition flex items-center gap-1"><span>Кастомные ручки GVL224</span><ExternalLink className="w-3 h-3 text-slate-400" /></a></li>
@@ -59,7 +61,17 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             </p>
             <div className="pt-2 text-[11px] text-slate-400 font-medium space-y-1">
               <div>© {new Date().getFullYear()} Проект FFBeast. Разработано для пилотов и симрейсеров.</div>
-              <div className="text-sky-700 font-bold">Сделано и разработано by Aldo_Apache_7734</div>
+              <div className="text-sky-700 font-bold">
+                Сделано и разработано by{' '}
+                <a 
+                  href="https://t.me/aldo_apache_7734" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="hover:underline font-extrabold text-sky-800"
+                >
+                  Aldo_Apache_7734
+                </a>
+              </div>
             </div>
           </div>
 
@@ -67,10 +79,16 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
 
         <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-slate-800 font-bold text-xs shadow-xs">
+            <a
+              href="https://t.me/aldo_apache_7734"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-sky-50 border border-sky-200 text-slate-800 font-bold text-xs shadow-xs hover:bg-sky-100 transition cursor-pointer"
+            >
               <span className="w-2 h-2 rounded-full bg-sky-500 animate-pulse" />
-              <span>Сделано и разработано by <span className="text-sky-700 font-extrabold">Aldo_Apache_7734</span></span>
-            </span>
+              <span>Сделано и разработано by <span className="text-sky-700 font-extrabold underline decoration-sky-300">Aldo_Apache_7734</span></span>
+              <ExternalLink className="w-3 h-3 text-sky-500" />
+            </a>
           </div>
           <div className="flex items-center gap-1 text-slate-500 font-medium">
             <span>Электроника:</span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ProductMode, PageRoute } from '../types';
-import { Plane, Car, Wrench, Download, ShoppingBag, ExternalLink, Sparkles, Home } from 'lucide-react';
+import { Plane, Car, Wrench, Download, ShoppingBag, ExternalLink, Sparkles, Home, Send } from 'lucide-react';
 
 interface NavbarProps {
   mode: ProductMode;
@@ -126,6 +126,18 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           {/* Actions */}
           <div className="flex items-center gap-2">
+            <a
+              href="https://t.me/FAQFFB"
+              target="_blank"
+              rel="noreferrer"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-xl text-sky-700 hover:text-sky-900 bg-sky-50 hover:bg-sky-100 border border-sky-200 transition"
+              title="Telegram канал FAQ FFB"
+            >
+              <Send className="w-3.5 h-3.5 text-sky-500" />
+              <span>Telegram FAQ</span>
+              <ExternalLink className="w-3 h-3 text-sky-400" />
+            </a>
+
             <a
               href="https://discord.gg/5ZKD46zQSU"
               target="_blank"

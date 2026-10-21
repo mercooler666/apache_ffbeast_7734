@@ -265,7 +265,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   });
   const deflPolyline = deflCoords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
 
-  const styleLabel = flightStyle === 'hardcore' ? 'Хардкор (100% сил)' : flightStyle === 'casual' ? 'Казуал (50% сил)' : 'Пилотажник (VPC Mangust)';
+  const styleLabel = flightStyle === 'hardcore' ? 'Хардкор (100% сил)' : flightStyle === 'casual' ? 'Казуал (50% сил)' : 'Пилотажник (Aldo Apache Approved)';
 
   return (
     <div className="py-10 bg-slate-50 min-h-screen">
@@ -448,7 +448,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </label>
                 <div className="grid grid-cols-4 gap-2">
                   {[
-                    { mm: 0, label: '0 мм (Стол)' },
+                    { mm: 0, label: '0 мм (Без удл.)' },
                     { mm: 75, label: '+75 мм' },
                     { mm: 100, label: '+100 мм' },
                     { mm: 200, label: '+200 мм (Пол)' }
@@ -710,7 +710,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                       {(maxForceKg * 0.5).toFixed(1)} кг
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Наполовину убрать усилия. Сбалансированный настольный комфорт для затяжных боев без усталости рук.
+                      Наполовину убрать усилия. Сбалансированный комфорт для затяжных боев без усталости рук.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
@@ -740,14 +740,14 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
-                        VPC Mangust
+                        Aldo Apache Approved
                       </span>
                     </div>
                     <div className="text-lg font-black text-emerald-600 mb-1">
                       2.0 кг
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Сбавить силу до минимума (уровень баз VPC MongoosT) и убрать вибрации на ручке для ювелирной точности прицела.
+                      Специальный пилотажный режим для максимально четкого управления без армрестлинга.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
