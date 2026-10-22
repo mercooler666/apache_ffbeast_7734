@@ -94,8 +94,9 @@ interface ProfileGeneratorProps {
 }
 
 export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }) => {
-  // Selection states (Default to Just Fly heavy jet archetype)
-  const [selectedAircraftId, setSelectedAircraftId] = useState<string>('universal-heavy-jet');
+  // Selection states (Default to regular aircraft, archetypes can be toggled on/off)
+  const [selectedAircraftId, setSelectedAircraftId] = useState<string>('dcs-su-27');
+  const [lastRegularAircraftId, setLastRegularAircraftId] = useState<string>('dcs-su-27');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [simFilter, setSimFilter] = useState<'all' | 'DCS World' | 'War Thunder' | 'helicopters' | 'props'>('all');
   const [revision, setRevision] = useState<HardwareRevision>('V5');
@@ -117,7 +118,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
 
   // Selected effects state (initialized with intelligent defaults for selected aircraft)
   const [selectedEffects, setSelectedEffects] = useState<SelectedEffectsMap>(() => {
-    const initialAircraft = AIRCRAFT_DATABASE.find(a => a.id === 'universal-heavy-jet') || AIRCRAFT_DATABASE[0];
+    const initialAircraft = AIRCRAFT_DATABASE.find(a => a.id === 'dcs-su-27') || AIRCRAFT_DATABASE[0];
     return getDefaultEffectsForAircraft(initialAircraft);
   });
 
@@ -129,6 +130,9 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   // Update default effects when aircraft selection changes
   const handleSelectAircraft = (ac: AircraftPreset) => {
     setSelectedAircraftId(ac.id);
+    if (!ac.id.startsWith('universal-')) {
+      setLastRegularAircraftId(ac.id);
+    }
     setSearchQuery('');
     const newDefaults = getDefaultEffectsForAircraft(ac);
     setSelectedEffects(newDefaults);
@@ -136,6 +140,25 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
       setMaxForceKg(ac.rlePitchForceKg);
     }
     setIsDirty(true);
+  };
+
+  // Toggle universal archetype (select or deselect back to regular aircraft)
+  const handleToggleArchetype = (archId: string) => {
+    if (selectedAircraftId === archId) {
+      // Deselect! Revert to last regular aircraft
+      const fallback = AIRCRAFT_DATABASE.find(a => a.id === lastRegularAircraftId && !a.id.startsWith('universal-'))
+        || AIRCRAFT_DATABASE.find(a => a.id === 'dcs-su-27')
+        || AIRCRAFT_DATABASE.find(a => a.id === 'dcs-f-15c')
+        || AIRCRAFT_DATABASE[0];
+      if (fallback) {
+        handleSelectAircraft(fallback);
+      }
+    } else {
+      const target = AIRCRAFT_DATABASE.find(a => a.id === archId);
+      if (target) {
+        handleSelectAircraft(target);
+      }
+    }
   };
 
   // Filtered aircraft list with comprehensive search
@@ -371,46 +394,75 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </span>
               </div>
 
-              {/* Universal Just Fly Archetypes Quick Selector */}
-              <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950 p-4 rounded-2xl border border-sky-800/60 shadow-inner space-y-2.5">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <div className="flex items-center gap-1.5 text-xs font-bold text-sky-200">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              {/* Universal Just Fly Archetypes Quick Selector - Clean Light Design */}
+              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                     <span>Быстрый выбор: 4 Универсальных архетипа Just Fly (Эталоны)</span>
                   </div>
-                  <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30 self-start sm:self-auto">
-                    РУС + Педали FFB
-                  </span>
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    {selectedAircraftId.startsWith('universal-') && (
+                      <button
+                        type="button"
+                        onClick={() => handleToggleArchetype(selectedAircraftId)}
+                        className="text-[10px] font-semibold text-amber-800 hover:text-amber-900 bg-amber-100 hover:bg-amber-200/80 px-2 py-0.5 rounded-full border border-amber-300 transition cursor-pointer flex items-center gap-1"
+                        title="Отменить выбор архетипа и вернуться к конкретному самолету"
+                      >
+                        <span>✕ Сбросить выбор</span>
+                      </button>
+                    )}
+                    <span className="text-[10px] font-mono font-bold text-slate-600 bg-white px-2 py-0.5 rounded-full border border-slate-200">
+                      РУС + Педали FFB
+                    </span>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
                   {UNIVERSAL_ARCHETYPES.map(arch => {
                     const isSelected = selectedAircraftId === arch.id;
                     return (
                       <button
                         key={arch.id}
                         type="button"
-                        onClick={() => {
-                          const target = AIRCRAFT_DATABASE.find(a => a.id === arch.id);
-                          if (target) handleSelectAircraft(target);
-                        }}
-                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        onClick={() => handleToggleArchetype(arch.id)}
+                        className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between relative ${
                           isSelected
-                            ? 'bg-sky-500/20 border-sky-400 text-white shadow-md shadow-sky-500/10 ring-1 ring-sky-400'
-                            : 'bg-slate-800/80 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
+                            ? 'bg-amber-50/90 border-amber-400 text-slate-900 shadow-xs ring-2 ring-amber-400/30'
+                            : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300 hover:bg-slate-50/70 shadow-2xs'
                         }`}
                       >
                         <div>
-                          <div className="flex items-center justify-between text-xs mb-1">
+                          <div className="flex items-center justify-between text-xs mb-1.5">
                             <span className="text-base">{arch.icon}</span>
-                            <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded">{arch.badge}</span>
+                            <span
+                              className={`text-[9px] font-mono font-bold px-1.5 py-0.5 rounded border transition ${
+                                isSelected
+                                  ? 'bg-amber-200/90 text-amber-950 border-amber-300 flex items-center gap-0.5 font-black'
+                                  : 'bg-slate-100 text-slate-600 border-slate-200'
+                              }`}
+                            >
+                              {isSelected ? '✓ Выбран' : arch.badge}
+                            </span>
                           </div>
-                          <div className="font-bold text-xs text-white leading-tight">{arch.name}</div>
-                          <div className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{arch.subtext}</div>
+                          <div className={`font-bold text-xs leading-tight ${isSelected ? 'text-amber-950 font-black' : 'text-slate-900'}`}>
+                            {arch.name}
+                          </div>
+                          <div className={`text-[10px] mt-0.5 line-clamp-1 ${isSelected ? 'text-amber-800 font-medium' : 'text-slate-500'}`}>
+                            {arch.subtext}
+                          </div>
                         </div>
-                        <div className="mt-2 pt-1.5 border-t border-slate-700/60 text-[10px] font-mono flex items-center justify-between">
-                          <span className="text-slate-400">РУС: {arch.pitchKg}</span>
-                          <span className="text-sky-300 font-bold">Пед: {arch.pedalKg}</span>
+
+                        <div className="mt-2.5 pt-2 border-t border-slate-100 flex flex-col gap-1">
+                          <div className="text-[10px] font-mono flex items-center justify-between">
+                            <span className={isSelected ? 'text-amber-800' : 'text-slate-500'}>РУС: {arch.pitchKg}</span>
+                            <span className={`font-bold ${isSelected ? 'text-amber-950' : 'text-slate-800'}`}>Пед: {arch.pedalKg}</span>
+                          </div>
+                          {isSelected && (
+                            <div className="text-[9px] text-amber-700 font-medium text-center pt-0.5 animate-fadeIn">
+                              Нажмите еще раз для отмены ✕
+                            </div>
+                          )}
                         </div>
                       </button>
                     );
