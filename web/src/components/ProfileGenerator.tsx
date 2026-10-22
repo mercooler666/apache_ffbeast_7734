@@ -40,7 +40,6 @@ import {
   CheckCircle2,
   Compass,
   Gauge,
-  Flame,
   Shield,
   ZapOff,
   Wind,
@@ -58,7 +57,7 @@ const UNIVERSAL_ARCHETYPES = [
     icon: '⚡',
     pitchKg: '14.5 кгс',
     pedalKg: '20.0 кгс',
-    badge: 'Just Fly Эталон'
+    badge: 'Эталон'
   },
   {
     id: 'universal-fbw-jet',
@@ -67,7 +66,7 @@ const UNIVERSAL_ARCHETYPES = [
     icon: '💻',
     pitchKg: '12.5 кгс',
     pedalKg: '16.5 кгс',
-    badge: 'Just Fly Эталон'
+    badge: 'Эталон'
   },
   {
     id: 'universal-prop-warbird',
@@ -76,7 +75,7 @@ const UNIVERSAL_ARCHETYPES = [
     icon: '🛩️',
     pitchKg: '21.0 кгс',
     pedalKg: '28.0 кгс',
-    badge: 'Just Fly Эталон'
+    badge: 'Эталон'
   },
   {
     id: 'universal-helicopter',
@@ -85,7 +84,7 @@ const UNIVERSAL_ARCHETYPES = [
     icon: '🚁',
     pitchKg: '3.8 кгс',
     pedalKg: '5.0 кгс',
-    badge: 'Just Fly Эталон'
+    badge: 'Эталон'
   }
 ];
 
@@ -105,7 +104,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   const [motorType, setMotorType] = useState<MotorType>('hoverboard_30mm');
   const [copied, setCopied] = useState<boolean>(false);
 
-  // Flight Style: Хардкор (100% сил), Казуал (50% сил), Пилотажник (минимум сил ~2.0 кг и 0 вибраций)
+  // Flight Style: Реалистичный (100% сил РЛЭ), Казуал (50% мягкости), Пилотажник (минимум сил ~2.0 кг и 0 вибраций)
   const [flightStyle, setFlightStyle] = useState<FlightStyle>('hardcore');
 
   // Active effect group tab for filtering the checklist
@@ -333,7 +332,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   });
   const deflPolyline = deflCoords.map(c => `${c.x.toFixed(1)},${c.y.toFixed(1)}`).join(' ');
 
-  const styleLabel = flightStyle === 'hardcore' ? 'Хардкор (100% сил)' : flightStyle === 'casual' ? 'Казуал (50% сил)' : 'Пилотажник (Aldo Apache Approved)';
+  const styleLabel = flightStyle === 'hardcore' ? 'Реалистичный (100% РЛЭ)' : flightStyle === 'casual' ? 'Казуал (50% мягкости)' : 'Пилотажник (Aldo Apache Approved)';
 
   return (
     <div className="py-10 bg-slate-50 min-h-screen">
@@ -394,12 +393,12 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </span>
               </div>
 
-              {/* Universal Just Fly Archetypes Quick Selector - Clean Light Design */}
+              {/* Universal Archetypes Quick Selector - Clean Light Design */}
               <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 space-y-3">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                    <span>Быстрый выбор: 4 Универсальных архетипа Just Fly (Эталоны)</span>
+                    <span>Быстрый выбор: 4 Универсальных архетипа (Эталоны)</span>
                   </div>
                   <div className="flex items-center gap-2 self-start sm:self-auto">
                     {selectedAircraftId.startsWith('universal-') && (
@@ -552,17 +551,17 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </div>
               </div>
 
-              {/* Engineering RLE Passport Card */}
-              <div className="bg-slate-900 text-white rounded-2xl p-4 border border-slate-800 shadow-md space-y-3">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+              {/* Engineering RLE Passport Card - Clean Light Design */}
+              <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs space-y-3.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-2.5">
                   <div className="flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-sky-400" />
-                    <span className="text-xs font-bold uppercase tracking-wider text-sky-300">
+                    <BookOpen className="w-4 h-4 text-sky-600" />
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-900">
                       Инженерный паспорт ЛА (РЛЭ / NATOPS / ТО)
                     </span>
                   </div>
                   {selectedAircraft.controlArchitecture && (
-                    <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-sky-950 text-sky-300 border border-sky-800">
+                    <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
                       {selectedAircraft.controlArchitecture === 'mechanical' && 'Прямая механика'}
                       {selectedAircraft.controlArchitecture === 'hydromechanical_boosted' && 'Бустерная гидравлика'}
                       {selectedAircraft.controlArchitecture === 'fly_by_wire' && 'ЭДСУ / Fly-By-Wire'}
@@ -573,84 +572,84 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
 
                 {/* Real RLE Document Source */}
                 {selectedAircraft.rleDocument && (
-                  <div className="text-[11px] text-slate-300 bg-slate-800/70 p-2.5 rounded-xl border border-slate-700/80 flex items-start gap-2">
-                    <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                  <div className="text-[11px] text-slate-700 bg-white p-3 rounded-xl border border-slate-200 flex items-start gap-2.5 shadow-2xs">
+                    <FileText className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" />
                     <div>
-                      <span className="text-slate-400 font-semibold block text-[10px] uppercase tracking-wide">Документация и первоисточник:</span>
-                      <strong className="text-slate-200 font-medium">{selectedAircraft.rleDocument}</strong>
+                      <span className="text-slate-500 font-semibold block text-[10px] uppercase tracking-wide">Документация и первоисточник:</span>
+                      <strong className="text-slate-900 font-medium">{selectedAircraft.rleDocument}</strong>
                     </div>
                   </div>
                 )}
 
                 {/* System Name */}
                 {selectedAircraft.controlSystemName && (
-                  <div className="text-[11px] text-slate-300 leading-snug">
-                    <span className="text-slate-400 font-semibold text-[10px] uppercase tracking-wide block mb-0.5">Система управления:</span>
-                    {selectedAircraft.controlSystemName}
+                  <div className="text-[11px] text-slate-700 bg-white p-3 rounded-xl border border-slate-200 shadow-2xs leading-snug">
+                    <span className="text-slate-500 font-semibold text-[10px] uppercase tracking-wide block mb-0.5">Система управления:</span>
+                    <span className="text-slate-800">{selectedAircraft.controlSystemName}</span>
                   </div>
                 )}
 
                 {/* Specs Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
-                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Усилие РУС</span>
-                    <strong className="text-emerald-400 font-mono text-xs">{selectedAircraft.rlePitchForceKg || maxForceKg} кгс</strong>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-0.5 text-[11px]">
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <span className="text-[10px] text-slate-500 block">Усилие РУС</span>
+                    <strong className="text-emerald-700 font-mono text-xs">{selectedAircraft.rlePitchForceKg || maxForceKg} кгс</strong>
                     <span className="text-[9px] text-slate-500 block">тангаж (крен: {selectedAircraft.rleRollForceKg || (maxForceKg * 0.6).toFixed(1)} кгс)</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Педали (РН)</span>
-                    <strong className="text-sky-300 font-mono text-xs">
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <span className="text-[10px] text-slate-500 block">Педали (РН)</span>
+                    <strong className="text-sky-700 font-mono text-xs">
                       {selectedAircraft.rleRudderForceKg || (selectedAircraft.isHelicopter ? 5.0 : Math.round((selectedAircraft.rlePitchForceKg || maxForceKg) * 1.4 * 10) / 10)} кгс
                     </strong>
                     <span className="text-[9px] text-slate-500 block">путевой канал (yaw)</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Градиент / Ход</span>
-                    <strong className="text-amber-300 font-mono text-xs truncate block">{selectedAircraft.rleGGradient || '2.5 – 3.5 кгс/G'}</strong>
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <span className="text-[10px] text-slate-500 block">Градиент / Ход</span>
+                    <strong className="text-amber-800 font-mono text-xs truncate block">{selectedAircraft.rleGGradient || '2.5 – 3.5 кгс/G'}</strong>
                     <span className="text-[9px] text-slate-500 block truncate">{selectedAircraft.rleStickTravel || 'Стандарт'}</span>
                   </div>
 
-                  <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Бафтинг (срыв)</span>
-                    <strong className="text-red-400 font-mono text-xs">α ≥ {selectedAircraft.aoaBuffetOnsetDeg || (selectedAircraft.aoaStallDeg * 0.8).toFixed(1)}°</strong>
+                  <div className="bg-white p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <span className="text-[10px] text-slate-500 block">Бафтинг (срыв)</span>
+                    <strong className="text-red-700 font-mono text-xs">α ≥ {selectedAircraft.aoaBuffetOnsetDeg || (selectedAircraft.aoaStallDeg * 0.8).toFixed(1)}°</strong>
                     <span className="text-[9px] text-slate-500 block">сваливание {selectedAircraft.aoaStallDeg}°</span>
                   </div>
                 </div>
 
                 {/* How FFBeast Achieves 1:1 Physics */}
                 {selectedAircraft.ffbEffectBreakdown && (
-                  <div className="pt-2 border-t border-slate-800">
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-sky-400 mb-1.5 flex items-center gap-1.5">
-                      <Cpu className="w-3.5 h-3.5" />
+                  <div className="pt-3 border-t border-slate-200">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-sky-800 mb-2 flex items-center gap-1.5">
+                      <Cpu className="w-3.5 h-3.5 text-sky-600" />
                       <span>Какими эффектами FFBeast воспроизводится физика 1:1:</span>
                     </div>
-                    <div className="space-y-1.5 text-[11px] text-slate-300">
+                    <div className="space-y-2 text-[11px] text-slate-700 bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
                       <div className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-mono font-bold shrink-0">⚙️ Пружины:</span>
-                        <span>{selectedAircraft.ffbEffectBreakdown.pitchSpringEffect}</span>
+                        <span className="text-sky-800 font-mono font-bold shrink-0">⚙️ Пружины:</span>
+                        <span className="text-slate-700">{selectedAircraft.ffbEffectBreakdown.pitchSpringEffect}</span>
                       </div>
                       <div className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-mono font-bold shrink-0">💧 Демпферы:</span>
-                        <span>{selectedAircraft.ffbEffectBreakdown.dampeningEffect}</span>
+                        <span className="text-sky-800 font-mono font-bold shrink-0">💧 Демпферы:</span>
+                        <span className="text-slate-700">{selectedAircraft.ffbEffectBreakdown.dampeningEffect}</span>
                       </div>
                       <div className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-mono font-bold shrink-0">🎚️ Триммер:</span>
-                        <span>{selectedAircraft.ffbEffectBreakdown.trimEffect}</span>
+                        <span className="text-sky-800 font-mono font-bold shrink-0">🎚️ Триммер:</span>
+                        <span className="text-slate-700">{selectedAircraft.ffbEffectBreakdown.trimEffect}</span>
                       </div>
                       <div className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-mono font-bold shrink-0">⚡ Шейкеры:</span>
-                        <span>{selectedAircraft.ffbEffectBreakdown.shakerEffects}</span>
+                        <span className="text-sky-800 font-mono font-bold shrink-0">⚡ Шейкеры:</span>
+                        <span className="text-slate-700">{selectedAircraft.ffbEffectBreakdown.shakerEffects}</span>
                       </div>
                       <div className="flex items-start gap-1.5">
-                        <span className="text-sky-400 font-mono font-bold shrink-0">💥 Импульсы:</span>
-                        <span>{selectedAircraft.ffbEffectBreakdown.joltsEffects}</span>
+                        <span className="text-sky-800 font-mono font-bold shrink-0">💥 Импульсы:</span>
+                        <span className="text-slate-700">{selectedAircraft.ffbEffectBreakdown.joltsEffects}</span>
                       </div>
                       {selectedAircraft.ffbEffectBreakdown.rudderPedalEffect && (
-                        <div className="flex items-start gap-1.5 pt-1 border-t border-slate-800/80">
-                          <span className="text-emerald-400 font-mono font-bold shrink-0">🦶 Педали FFB:</span>
-                          <span className="text-emerald-200">{selectedAircraft.ffbEffectBreakdown.rudderPedalEffect}</span>
+                        <div className="flex items-start gap-1.5 pt-2 border-t border-slate-100">
+                          <span className="text-emerald-800 font-mono font-bold shrink-0">🦶 Педали FFB:</span>
+                          <span className="text-emerald-900 font-medium">{selectedAircraft.ffbEffectBreakdown.rudderPedalEffect}</span>
                         </div>
                       )}
                     </div>
@@ -895,7 +894,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {/* Option 1: Хардкор (Максимальный реализм) */}
+                {/* Option 1: Реалистичный (Максимальный реализм РЛЭ) */}
                 <div
                   onClick={() => {
                     setFlightStyle('hardcore');
@@ -910,29 +909,29 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-1.5">
-                        <Flame className="w-4 h-4 text-red-500" />
+                        <Compass className="w-4 h-4 text-sky-600" />
                         <span className="text-xs font-black uppercase tracking-wider text-slate-900">
-                          Хардкор
+                          Реалистичный
                         </span>
                       </div>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 text-red-800 border border-red-200">
-                        Максимальный реализм (РЛЭ)
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 border border-sky-200">
+                        1:1 РЛЭ (Реализм)
                       </span>
                     </div>
                     <div className="text-lg font-black text-slate-900 mb-1">
                       {maxForceKg.toFixed(1)} кг (1:1)
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Аутентичные усилия по РЛЭ конкретного самолета, честная кинематика проводки (бустеры/механика/ЭДСУ), точный скоростной напор и бафтинг строго на срывных углах атаки без искусственного выкручивания сил.
+                      Максимально реалистичный режим: точные усилия и поведение органов управления строго по РЛЭ и технической документации самолета. Честная аэродинамика скоростного напора, бустеров и ЭДСУ, правильный бафтинг на срывных углах атаки без искусственного выкручивания сил.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
                     <span>Физика:</span>
-                    <strong className="text-red-700 font-bold">1:1 к РЛЭ (Без завышения)</strong>
+                    <strong className="text-sky-800 font-bold">1:1 по РЛЭ (Честный реализм)</strong>
                   </div>
                 </div>
 
-                {/* Option 2: Казуал */}
+                {/* Option 2: Казуал (50% мягкости) */}
                 <div
                   onClick={() => {
                     setFlightStyle('casual');
@@ -940,7 +939,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                   }}
                   className={`p-4 rounded-2xl border transition cursor-pointer flex flex-col justify-between ${
                     flightStyle === 'casual'
-                      ? 'bg-sky-50/80 border-sky-500 shadow-sm ring-1 ring-sky-500'
+                      ? 'bg-amber-50/80 border-amber-500 shadow-sm ring-1 ring-amber-500'
                       : 'bg-white border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                   }`}
                 >
@@ -953,19 +952,19 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                         </span>
                       </div>
                       <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                        50% усилий
+                        50% мягкости
                       </span>
                     </div>
                     <div className="text-lg font-black text-slate-900 mb-1">
                       {(maxForceKg * 0.5).toFixed(1)} кг
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Наполовину убрать усилия для комфортных длительных вылетов без усталости рук при сохранении всей информативности эффектов.
+                      Режим с 50% мягкости: усилия на ручке и педалях снижены наполовину для максимального комфорта и мягкого управления. Все аэродинамические эффекты и обратная связь сохраняются, но ощущаются плавно и без усталости рук даже при многочасовых вылетах.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
-                    <span>Вибрации:</span>
-                    <strong className="text-amber-700 font-bold">60% Мягкие</strong>
+                    <span>Нагрузка:</span>
+                    <strong className="text-amber-700 font-bold">50% мягкости</strong>
                   </div>
                 </div>
 
@@ -1113,7 +1112,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </div>
                 <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                   <span className="text-[10px] text-slate-400 block">Стиль</span>
-                  <strong className="text-slate-800 text-xs truncate block">{flightStyle === 'hardcore' ? 'Хардкор (1:1)' : flightStyle === 'casual' ? 'Казуал' : 'Пилотажник'}</strong>
+                  <strong className="text-slate-800 text-xs truncate block">{flightStyle === 'hardcore' ? 'Реалистичный' : flightStyle === 'casual' ? 'Казуал (50%)' : 'Пилотажник'}</strong>
                 </div>
               </div>
 

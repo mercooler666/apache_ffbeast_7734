@@ -23,16 +23,16 @@ export interface AircraftRleData {
 }
 
 export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
-  // ===================== 4 УНИВЕРСАЛЬНЫХ АРХЕТИПА (JUST FLY ЭТАЛОН) =====================
+  // ===================== 4 УНИВЕРСАЛЬНЫХ АРХЕТИПА (ЭТАЛОНЫ) =====================
   'universal-heavy-jet': {
     controlArchitecture: 'hydromechanical_boosted',
-    controlSystemName: 'Универсальное необратимое гидробустерное управление с пружинным загружателем АРУ-В/CAS (Эталон Just Fly)',
+    controlSystemName: 'Универсальное необратимое гидробустерное управление с пружинным загружателем АРУ-В/CAS (Эталонная кинематика)',
     rlePitchForceKg: 14.5,
     rleRollForceKg: 7.5,
     rleRudderForceKg: 20.0,
     rleGGradient: '2.5 – 3.8 кгс/G',
     rleStickTravel: '+140 мм / -100 мм, ±90 мм крен, ±100 мм педали',
-    rleDocument: 'Эталонный профиль Just Fly (DCS_Su_27_From_JustFlyIt / DCS_F_15C_Real_Force)',
+    rleDocument: 'РЛЭ Су-27СК Кн. 1 / USAF T.O. 1F-15C-1 (Сводный эталон тяжелого джета)',
     aoaBuffetOnsetDeg: 18.0,
     vStallKmh: 215,
     trimMethod: 'МЭТ / CAS Electric trim со смещением нейтрали пружинного загружателя',
@@ -47,13 +47,13 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
   },
   'universal-fbw-jet': {
     controlArchitecture: 'fly_by_wire',
-    controlSystemName: 'Универсальная цифровая комплексная ЭДСУ / Fly-By-Wire (Эталон Just Fly DCS_FA_18C)',
+    controlSystemName: 'Универсальная цифровая комплексная ЭДСУ / Fly-By-Wire (Эталонная кинематика)',
     rlePitchForceKg: 12.5,
     rleRollForceKg: 6.8,
     rleRudderForceKg: 16.5,
     rleGGradient: '2.0 – 2.8 кгс/G (G-force feel gradient)',
     rleStickTravel: '+125 мм / -85 мм, ±75 мм крен, ±80 мм педали',
-    rleDocument: 'Эталонный профиль Just Fly (DCS_FA_18C_From_JustFlyIt / DCS_F_16C)',
+    rleDocument: 'NATOPS Flight Manual F/A-18C / USAF T.O. 1F-16C-1 (Сводный эталон FBW)',
     aoaBuffetOnsetDeg: 19.0,
     vStallKmh: 220,
     trimMethod: 'Электронный триммер FCC/FLCS (Auto-trim в крейсерском полете)',
@@ -68,13 +68,13 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
   },
   'universal-prop-warbird': {
     controlArchitecture: 'mechanical',
-    controlSystemName: 'Универсальная обратимая механическая тягово-тросовая проводка WWII (Эталон Just Fly P-51D / Bf-109)',
+    controlSystemName: 'Универсальная обратимая механическая тягово-тросовая проводка WWII (Эталонная кинематика)',
     rlePitchForceKg: 21.0,
     rleRollForceKg: 11.5,
     rleRudderForceKg: 28.0,
     rleGGradient: '3.5 – 5.5 кгс/G (бобвейт и аэродинамическое затяжеление)',
     rleStickTravel: '+150 мм / -110 мм, ±95 мм крен, ±110 мм педали',
-    rleDocument: 'Эталонный профиль Just Fly (DCS_P_51New / GENERIC_JETT_AIRPLANE_TEMPLATE)',
+    rleDocument: 'USAAF Pilot Flight Manual P-51D Mustang / L.Dv.T. 2109 Bf 109K-4 (Сводный эталон WWII)',
     aoaBuffetOnsetDeg: 15.0,
     vStallKmh: 155,
     trimMethod: 'Механические триммерные колеса (смещение рулей и нейтрали РУС/педалей)',
@@ -89,13 +89,13 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
   },
   'universal-helicopter': {
     controlArchitecture: 'helicopter_force_trim',
-    controlSystemName: 'Универсальное вертолетное управление с Force Trim и гидроусилителями (Эталон Just Fly Mi-8 / UH-1H)',
+    controlSystemName: 'Универсальное вертолетное управление с Force Trim и гидроусилителями (Эталонная кинематика)',
     rlePitchForceKg: 3.8,
     rleRollForceKg: 2.8,
     rleRudderForceKg: 5.0,
     rleGGradient: 'Отсутствует (вертолетная кинематика)',
     rleStickTravel: 'Круговой ход циклика ~250 мм, ход педалей ~240 мм',
-    rleDocument: 'Эталонный профиль Just Fly (DCS_Mi_8_From_JustFlyIt / GENERIC_HELLICOPTER_TEMPLATE)',
+    rleDocument: 'Инструкция экипажу вертолета Ми-8МТВ / TM 55-1520-210-10 UH-1H (Сводный эталон Force Trim)',
     aoaBuffetOnsetDeg: 0,
     vStallKmh: 0,
     trimMethod: 'Force Trim Release: зажатие кнопки на РПУ полностью снимает нагрузку на РУС и педалях, отпускание фиксирует новый центр',

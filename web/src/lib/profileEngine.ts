@@ -16,11 +16,11 @@ import { getAircraftRleData } from './aircraftRleDatabase';
 
 const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
   // ==========================================
-  // JUST FLY UNIVERSAL ARCHETYPES (ЭТАЛОНЫ)
+  // UNIVERSAL ARCHETYPES (ЭТАЛОНЫ)
   // ==========================================
   {
     id: 'universal-heavy-jet',
-    name: 'Эталон Just Fly: Тяжелый гидробустерный истребитель (Су-27 / F-15 / МиГ-29)',
+    name: 'Тяжелый гидробустерный истребитель (Су-27 / F-15 / МиГ-29)',
     category: 'modern_jet',
     simName: 'DCS World',
     simCode: 1,
@@ -31,11 +31,11 @@ const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
     hasAfterburner: true,
     hasAirbrake: true,
     engineType: 'Турбореактивный с форсажем (АЛ-31Ф / F100)',
-    description: 'Эталонный профиль Just Fly: необратимые гидроусилители БУ-250А, пружинный загружатель АРУ-В, скоростной напор Q-feel, триммирование МЭТ и активные педали'
+    description: 'Эталонный профиль: необратимые гидроусилители БУ-250А, пружинный загружатель АРУ-В, скоростной напор Q-feel, триммирование МЭТ и активные педали'
   },
   {
     id: 'universal-fbw-jet',
-    name: 'Эталон Just Fly: Цифровой FBW / ЭДСУ истребитель (F/A-18C / F-16C / Mirage)',
+    name: 'Цифровой FBW / ЭДСУ истребитель (F/A-18C / F-16C / Mirage)',
     category: 'modern_jet',
     simName: 'DCS World',
     simCode: 1,
@@ -46,11 +46,11 @@ const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
     hasAfterburner: true,
     hasAirbrake: true,
     engineType: 'Турбовентиляторный с форсажем (F404 / F110)',
-    description: 'Эталонный профиль Just Fly: алгоритмы FCC/FLCS, градиент перегрузки G-feel, синтетический шейкер срыва, демпфирование сервоприводов и рудер-лимитер'
+    description: 'Эталонный профиль: алгоритмы FCC/FLCS, градиент перегрузки G-feel, синтетический шейкер срыва, демпфирование сервоприводов и рудер-лимитер'
   },
   {
     id: 'universal-prop-warbird',
-    name: 'Эталон Just Fly: Поршневой истребитель WWII (P-51D / Bf 109 / Spitfire)',
+    name: 'Поршневой истребитель WWII (P-51D / Bf 109 / Spitfire)',
     category: 'prop_warbird',
     simName: 'DCS World',
     simCode: 1,
@@ -61,11 +61,11 @@ const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
     hasAfterburner: false,
     hasAirbrake: false,
     engineType: 'Поршневой V-12 / Звездообразный с винтом',
-    description: 'Эталонный профиль Just Fly: 100% обратимая аэродинамика, обдув винта (propwash), затяжеление рулей на скорости до 28 кгс на педалях, весовая компенсация'
+    description: 'Эталонный профиль: 100% обратимая аэродинамика, обдув винта (propwash), затяжеление рулей на скорости до 28 кгс на педалях, весовая компенсация'
   },
   {
     id: 'universal-helicopter',
-    name: 'Эталон Just Fly: Боевой / Транспортный вертолет (Ми-8 / UH-1H / AH-64 / Ка-50)',
+    name: 'Боевой / Транспортный вертолет (Ми-8 / UH-1H / AH-64 / Ка-50)',
     category: 'helicopter',
     simName: 'DCS World',
     simCode: 1,
@@ -76,7 +76,7 @@ const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
     hasAfterburner: false,
     hasAirbrake: false,
     engineType: 'Газотурбинный (ТВ3-117 / T700)',
-    description: 'Эталонный профиль Just Fly: вертолетный Force Trim Release (снятие усилий кнопкой для РУС и педалей), лопастная частота 1/rev-4/rev, тряска косой обдувки (ETL)',
+    description: 'Эталонный профиль: вертолетный Force Trim Release (снятие усилий кнопкой для РУС и педалей), лопастная частота 1/rev-4/rev, тряска косой обдувки (ETL)',
     isHelicopter: true
   },
 
@@ -1661,14 +1661,14 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
   let stickVibrationsEnabled = true;
 
   if (flightStyle === 'hardcore') {
-    // "Хардкор" - честный максимальный реализм 1:1 по РЛЭ самолета
+    // "Реалистичный" - честный максимальный реализм 1:1 по РЛЭ самолета
     // Если в РЛЭ указано усилие (например 14.5 кг для Су-27, 22 кг для P-51, 3.5 кг для вертолета),
     // на ладонь летчика транслируется реальная аэродинамическая нагрузка
     effectivePitchForceKg = aircraft.rlePitchForceKg || config.maxForceKg;
     shakerStrengthFactor = 1.0;
     stickVibrationsEnabled = true;
   } else if (flightStyle === 'casual') {
-    // "Казуал" - наполовину убрать усилия от базового уровня РЛЭ
+    // "Казуал (50% мягкости)" - наполовину убрать усилия от базового уровня РЛЭ
     const baseForce = aircraft.rlePitchForceKg || config.maxForceKg;
     effectivePitchForceKg = Number((baseForce * 0.5).toFixed(1));
     shakerStrengthFactor = 0.6;

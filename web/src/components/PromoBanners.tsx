@@ -57,7 +57,7 @@ export const PromoBanners: React.FC<PromoBannersProps> = ({ mode = 'flight', onN
                   <p className="text-sm text-slate-600 mt-2 leading-relaxed">
                     Автоматический расчет и генерация калиброванного <code className="text-sky-700 font-bold bg-sky-50 px-1.5 py-0.5 rounded">.json</code> файла 
                     с эталонной физикой <strong>Real Force</strong>. Поддержка F-15C, Su-35, F-22A, F/A-18C, Su-27 и всех модулей DCS & War Thunder. 
-                    Индивидуальный выбор 28 эффектов галочками, стили полета (Хардкор, Казуал, Пилотажник) и экспорт в FFBeast Commander.
+                    Индивидуальный выбор 28 эффектов галочками, стили полета (Реалистичный, Казуал 50%, Пилотажник) и экспорт в FFBeast Commander.
                   </p>
                 </div>
 
@@ -72,7 +72,7 @@ export const PromoBanners: React.FC<PromoBannersProps> = ({ mode = 'flight', onN
                   </div>
                   <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
                     <div className="font-bold text-slate-900">3 Режима сил</div>
-                    <div className="text-[11px] text-slate-500">Хардкор / Казуал / Пилотаж</div>
+                    <div className="text-[11px] text-slate-500">Реалистичный / Казуал 50% / Пилотаж</div>
                   </div>
                 </div>
               </div>
