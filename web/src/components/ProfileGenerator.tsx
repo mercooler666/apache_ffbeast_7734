@@ -50,18 +50,57 @@ import {
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
+const UNIVERSAL_ARCHETYPES = [
+  {
+    id: 'universal-heavy-jet',
+    name: 'Тяжелый бустерный джет',
+    subtext: 'Су-27 / Су-33 / F-15 / МиГ-29',
+    icon: '⚡',
+    pitchKg: '14.5 кгс',
+    pedalKg: '20.0 кгс',
+    badge: 'Just Fly Эталон'
+  },
+  {
+    id: 'universal-fbw-jet',
+    name: 'Цифровой Fly-By-Wire',
+    subtext: 'F/A-18C / F-16C / Mirage 2000',
+    icon: '💻',
+    pitchKg: '12.5 кгс',
+    pedalKg: '16.5 кгс',
+    badge: 'Just Fly Эталон'
+  },
+  {
+    id: 'universal-prop-warbird',
+    name: 'Поршневой Warbird WWII',
+    subtext: 'P-51D / Bf 109 / Spitfire / Fw 190',
+    icon: '🛩️',
+    pitchKg: '21.0 кгс',
+    pedalKg: '28.0 кгс',
+    badge: 'Just Fly Эталон'
+  },
+  {
+    id: 'universal-helicopter',
+    name: 'Вертолет (Force Trim)',
+    subtext: 'Ми-8 / UH-1H / AH-64 / Ка-50',
+    icon: '🚁',
+    pitchKg: '3.8 кгс',
+    pedalKg: '5.0 кгс',
+    badge: 'Just Fly Эталон'
+  }
+];
+
 interface ProfileGeneratorProps {
   onNavigate?: (route: PageRoute) => void;
 }
 
 export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }) => {
-  // Selection states
-  const [selectedAircraftId, setSelectedAircraftId] = useState<string>('dcs-f-15c');
+  // Selection states (Default to Just Fly heavy jet archetype)
+  const [selectedAircraftId, setSelectedAircraftId] = useState<string>('universal-heavy-jet');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [simFilter, setSimFilter] = useState<'all' | 'DCS World' | 'War Thunder' | 'helicopters' | 'props'>('all');
   const [revision, setRevision] = useState<HardwareRevision>('V5');
   const [extensionMm, setExtensionMm] = useState<number>(100);
-  const [maxForceKg, setMaxForceKg] = useState<number>(6.5);
+  const [maxForceKg, setMaxForceKg] = useState<number>(14.5);
   const [motorType, setMotorType] = useState<MotorType>('hoverboard_30mm');
   const [copied, setCopied] = useState<boolean>(false);
 
@@ -78,7 +117,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
 
   // Selected effects state (initialized with intelligent defaults for selected aircraft)
   const [selectedEffects, setSelectedEffects] = useState<SelectedEffectsMap>(() => {
-    const initialAircraft = AIRCRAFT_DATABASE.find(a => a.id === 'dcs-f-15c') || AIRCRAFT_DATABASE[0];
+    const initialAircraft = AIRCRAFT_DATABASE.find(a => a.id === 'universal-heavy-jet') || AIRCRAFT_DATABASE[0];
     return getDefaultEffectsForAircraft(initialAircraft);
   });
 
@@ -332,6 +371,53 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 </span>
               </div>
 
+              {/* Universal Just Fly Archetypes Quick Selector */}
+              <div className="bg-gradient-to-br from-slate-900 via-slate-900 to-sky-950 p-4 rounded-2xl border border-sky-800/60 shadow-inner space-y-2.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-sky-200">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Быстрый выбор: 4 Универсальных архетипа Just Fly (Эталоны)</span>
+                  </div>
+                  <span className="text-[10px] font-mono font-bold text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30 self-start sm:self-auto">
+                    РУС + Педали FFB
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {UNIVERSAL_ARCHETYPES.map(arch => {
+                    const isSelected = selectedAircraftId === arch.id;
+                    return (
+                      <button
+                        key={arch.id}
+                        type="button"
+                        onClick={() => {
+                          const target = AIRCRAFT_DATABASE.find(a => a.id === arch.id);
+                          if (target) handleSelectAircraft(target);
+                        }}
+                        className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                          isSelected
+                            ? 'bg-sky-500/20 border-sky-400 text-white shadow-md shadow-sky-500/10 ring-1 ring-sky-400'
+                            : 'bg-slate-800/80 border-slate-700/80 text-slate-300 hover:bg-slate-800 hover:border-slate-600'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="text-base">{arch.icon}</span>
+                            <span className="text-[9px] font-mono font-bold text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded">{arch.badge}</span>
+                          </div>
+                          <div className="font-bold text-xs text-white leading-tight">{arch.name}</div>
+                          <div className="text-[10px] text-slate-400 mt-0.5 line-clamp-1">{arch.subtext}</div>
+                        </div>
+                        <div className="mt-2 pt-1.5 border-t border-slate-700/60 text-[10px] font-mono flex items-center justify-between">
+                          <span className="text-slate-400">РУС: {arch.pitchKg}</span>
+                          <span className="text-sky-300 font-bold">Пед: {arch.pedalKg}</span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Simulator Filter Tabs */}
               <div className="flex flex-wrap gap-1.5 bg-slate-100 p-1.5 rounded-2xl text-xs font-semibold">
                 {[
@@ -455,21 +541,23 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 {/* Specs Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px]">
                   <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Усилие РЛЭ</span>
+                    <span className="text-[10px] text-slate-400 block">Усилие РУС</span>
                     <strong className="text-emerald-400 font-mono text-xs">{selectedAircraft.rlePitchForceKg || maxForceKg} кгс</strong>
                     <span className="text-[9px] text-slate-500 block">тангаж (крен: {selectedAircraft.rleRollForceKg || (maxForceKg * 0.6).toFixed(1)} кгс)</span>
                   </div>
 
                   <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Градиент G</span>
-                    <strong className="text-sky-300 font-mono text-xs">{selectedAircraft.rleGGradient || '2.5 – 3.5 кгс/G'}</strong>
-                    <span className="text-[9px] text-slate-500 block">усилие на 1 ед. G</span>
+                    <span className="text-[10px] text-slate-400 block">Педали (РН)</span>
+                    <strong className="text-sky-300 font-mono text-xs">
+                      {selectedAircraft.rleRudderForceKg || (selectedAircraft.isHelicopter ? 5.0 : Math.round((selectedAircraft.rlePitchForceKg || maxForceKg) * 1.4 * 10) / 10)} кгс
+                    </strong>
+                    <span className="text-[9px] text-slate-500 block">путевой канал (yaw)</span>
                   </div>
 
                   <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
-                    <span className="text-[10px] text-slate-400 block">Ход РУС</span>
-                    <strong className="text-amber-300 font-mono text-xs truncate block">{selectedAircraft.rleStickTravel || 'Стандарт'}</strong>
-                    <span className="text-[9px] text-slate-500 block">в реальной кабине</span>
+                    <span className="text-[10px] text-slate-400 block">Градиент / Ход</span>
+                    <strong className="text-amber-300 font-mono text-xs truncate block">{selectedAircraft.rleGGradient || '2.5 – 3.5 кгс/G'}</strong>
+                    <span className="text-[9px] text-slate-500 block truncate">{selectedAircraft.rleStickTravel || 'Стандарт'}</span>
                   </div>
 
                   <div className="bg-slate-800/80 p-2 rounded-xl border border-slate-700/60">
@@ -507,6 +595,12 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                         <span className="text-sky-400 font-mono font-bold shrink-0">💥 Импульсы:</span>
                         <span>{selectedAircraft.ffbEffectBreakdown.joltsEffects}</span>
                       </div>
+                      {selectedAircraft.ffbEffectBreakdown.rudderPedalEffect && (
+                        <div className="flex items-start gap-1.5 pt-1 border-t border-slate-800/80">
+                          <span className="text-emerald-400 font-mono font-bold shrink-0">🦶 Педали FFB:</span>
+                          <span className="text-emerald-200">{selectedAircraft.ffbEffectBreakdown.rudderPedalEffect}</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
@@ -952,7 +1046,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                 <span>Скачать .JSON профиль ({displayResult.effectivePitchForceKg} кг)</span>
               </button>
 
-              <div className="grid grid-cols-3 gap-2 text-center text-xs font-mono">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-center text-xs font-mono">
                 <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                   <span className="text-[10px] text-slate-400 block">Тангаж</span>
                   <strong className="text-slate-900 text-sm">{displayResult.effectivePitchForceKg} кг</strong>
@@ -962,8 +1056,12 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                   <strong className="text-slate-900 text-sm">{displayResult.effectiveRollForceKg} кг</strong>
                 </div>
                 <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                  <span className="text-[10px] text-slate-400 block">Педали</span>
+                  <strong className="text-sky-700 text-sm">{displayResult.effectiveRudderForceKg} кг</strong>
+                </div>
+                <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
                   <span className="text-[10px] text-slate-400 block">Стиль</span>
-                  <strong className="text-sky-700 text-xs truncate block">{flightStyle === 'hardcore' ? 'Хардкор' : flightStyle === 'casual' ? 'Казуал' : 'Пилотажник'}</strong>
+                  <strong className="text-slate-800 text-xs truncate block">{flightStyle === 'hardcore' ? 'Хардкор (1:1)' : flightStyle === 'casual' ? 'Казуал' : 'Пилотажник'}</strong>
                 </div>
               </div>
 

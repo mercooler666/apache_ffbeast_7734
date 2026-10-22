@@ -5,6 +5,7 @@ export interface AircraftRleData {
   controlSystemName: string;
   rlePitchForceKg: number;
   rleRollForceKg: number;
+  rleRudderForceKg?: number;
   rleGGradient: string;
   rleStickTravel: string;
   rleDocument: string;
@@ -17,16 +18,104 @@ export interface AircraftRleData {
     trimEffect: string;
     shakerEffects: string;
     joltsEffects: string;
+    rudderPedalEffect?: string;
   };
 }
 
 export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
+  // ===================== 4 УНИВЕРСАЛЬНЫХ АРХЕТИПА (JUST FLY ЭТАЛОН) =====================
+  'universal-heavy-jet': {
+    controlArchitecture: 'hydromechanical_boosted',
+    controlSystemName: 'Универсальное необратимое гидробустерное управление с пружинным загружателем АРУ-В/CAS (Эталон Just Fly)',
+    rlePitchForceKg: 14.5,
+    rleRollForceKg: 7.5,
+    rleRudderForceKg: 20.0,
+    rleGGradient: '2.5 – 3.8 кгс/G',
+    rleStickTravel: '+140 мм / -100 мм, ±90 мм крен, ±100 мм педали',
+    rleDocument: 'Эталонный профиль Just Fly (DCS_Su_27_From_JustFlyIt / DCS_F_15C_Real_Force)',
+    aoaBuffetOnsetDeg: 18.0,
+    vStallKmh: 215,
+    trimMethod: 'МЭТ / CAS Electric trim со смещением нейтрали пружинного загружателя',
+    ffbEffectBreakdown: {
+      pitchSpringEffect: 'simple_spring (S-кривая загружателя) + airspeed_spring (скоростной напор V² с полкой АРУ)',
+      dampeningEffect: 'smart_damper (Static: 55%, Dynamic: 65% для РУС и 80% для педалей)',
+      trimEffect: 'trim (Hardware Trim смещение нейтрали)',
+      shakerEffects: 'aoa_stall_shaker (порог 18.0° срыв потока), afterburner_shaker, airbrake_shaker, flaps_shaker, gunfire_shaker',
+      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt, damage_jolt',
+      rudderPedalEffect: 'Полная калибровка педалей: скоростной напор на киле, толчки передней стойки, демпфирование 80%'
+    }
+  },
+  'universal-fbw-jet': {
+    controlArchitecture: 'fly_by_wire',
+    controlSystemName: 'Универсальная цифровая комплексная ЭДСУ / Fly-By-Wire (Эталон Just Fly DCS_FA_18C)',
+    rlePitchForceKg: 12.5,
+    rleRollForceKg: 6.8,
+    rleRudderForceKg: 16.5,
+    rleGGradient: '2.0 – 2.8 кгс/G (G-force feel gradient)',
+    rleStickTravel: '+125 мм / -85 мм, ±75 мм крен, ±80 мм педали',
+    rleDocument: 'Эталонный профиль Just Fly (DCS_FA_18C_From_JustFlyIt / DCS_F_16C)',
+    aoaBuffetOnsetDeg: 19.0,
+    vStallKmh: 220,
+    trimMethod: 'Электронный триммер FCC/FLCS (Auto-trim в крейсерском полете)',
+    ffbEffectBreakdown: {
+      pitchSpringEffect: 'simple_spring (прогрессивная загрузка ЭДСУ) + g_force_spring (градиент по перегрузке)',
+      dampeningEffect: 'smart_damper (Static: 50%, Dynamic: 55% адаптивное демпфирование)',
+      trimEffect: 'trim (Hardware Trim нейтрали)',
+      shakerEffects: 'aoa_stall_shaker (порог 19.0° синтетический шейкер FLCS), afterburner_shaker, gunfire_shaker',
+      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt',
+      rudderPedalEffect: 'Адаптивный отклик педалей с ограничением скольжения по скорости (Rudder limiter)'
+    }
+  },
+  'universal-prop-warbird': {
+    controlArchitecture: 'mechanical',
+    controlSystemName: 'Универсальная обратимая механическая тягово-тросовая проводка WWII (Эталон Just Fly P-51D / Bf-109)',
+    rlePitchForceKg: 21.0,
+    rleRollForceKg: 11.5,
+    rleRudderForceKg: 28.0,
+    rleGGradient: '3.5 – 5.5 кгс/G (бобвейт и аэродинамическое затяжеление)',
+    rleStickTravel: '+150 мм / -110 мм, ±95 мм крен, ±110 мм педали',
+    rleDocument: 'Эталонный профиль Just Fly (DCS_P_51New / GENERIC_JETT_AIRPLANE_TEMPLATE)',
+    aoaBuffetOnsetDeg: 15.0,
+    vStallKmh: 155,
+    trimMethod: 'Механические триммерные колеса (смещение рулей и нейтрали РУС/педалей)',
+    ffbEffectBreakdown: {
+      pitchSpringEffect: 'airspeed_spring (квадратичный рост скоростного напора V²) + prop_thrust_spring (обдувка винтом на 0 км/ч)',
+      dampeningEffect: 'smart_damper (Static: 35%, Dynamic: 70% кинематика тросов)',
+      trimEffect: 'elevator_weight (рули провисают на стоянке под собственным весом!) + trim',
+      shakerEffects: 'aoa_stall_shaker (порог 15.0° срыв потока на крыле), gunfire_shaker, engine_shaker (вибрация мотора)',
+      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt',
+      rudderPedalEffect: 'Активный обдув киля струей винта (P-factor на разбеге), тяжелое сопротивление педалей на скорости'
+    }
+  },
+  'universal-helicopter': {
+    controlArchitecture: 'helicopter_force_trim',
+    controlSystemName: 'Универсальное вертолетное управление с Force Trim и гидроусилителями (Эталон Just Fly Mi-8 / UH-1H)',
+    rlePitchForceKg: 3.8,
+    rleRollForceKg: 2.8,
+    rleRudderForceKg: 5.0,
+    rleGGradient: 'Отсутствует (вертолетная кинематика)',
+    rleStickTravel: 'Круговой ход циклика ~250 мм, ход педалей ~240 мм',
+    rleDocument: 'Эталонный профиль Just Fly (DCS_Mi_8_From_JustFlyIt / GENERIC_HELLICOPTER_TEMPLATE)',
+    aoaBuffetOnsetDeg: 0,
+    vStallKmh: 0,
+    trimMethod: 'Force Trim Release: зажатие кнопки на РПУ полностью снимает нагрузку на РУС и педалях, отпускание фиксирует новый центр',
+    ffbEffectBreakdown: {
+      pitchSpringEffect: 'simple_spring (легкая центрирующая пружина) с полным отключением через Force Release',
+      dampeningEffect: 'smart_damper (Static: 65%, Dynamic: 25% вязкое гидравлическое трение циклика и педалей)',
+      trimEffect: 'trim (Hardware Trim: force_release_allowed: true для РУС и педалей!)',
+      shakerEffects: 'rotor_shaker (лопастная частота несущего винта), etl_shaker (косая обдувка 30-50 км/ч), vorterx_state_shaker (вихревое кольцо)',
+      joltsEffects: 'landing_jolt (касание лыжами или колесами)',
+      rudderPedalEffect: 'Педали путевого управления: полное снятие усилий по Force Trim, лопастная вибрация хвостового винта'
+    }
+  },
+
   // ===================== СУ-27 / СУ-33 =====================
   'dcs-su-27': {
     controlArchitecture: 'hydromechanical_boosted',
     controlSystemName: 'Необратимое бустерное управление с гидроусилителями БУ-250А, автоматом регулировки усилий АРУ-В и системой дистанционного управления СДУ-10',
     rlePitchForceKg: 14.5,
     rleRollForceKg: 7.0,
+    rleRudderForceKg: 22.0,
     rleGGradient: '2.5 – 3.8 кгс/ед. перегрузки (закон АРУ-В)',
     rleStickTravel: '+145 мм к себе / -105 мм от себя, ±95 мм крен',
     rleDocument: 'РЛЭ самолета Су-27СК, Книга 1 / Практическая аэродинамика Су-27 (ЦАГИ / ВВИА им. Жуковского)',
@@ -38,7 +127,8 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
       dampeningEffect: 'smart_damper (Static: 55%, Dynamic: 60% демпфирование сервоприводов БУ-250А)',
       trimEffect: 'trim (Hardware Trim: физическое смещение нейтрали пружин МЭТ-4У)',
       shakerEffects: 'aoa_stall_shaker (порог 18.5° срыв вихрей с наплывов крыла), afterburner_shaker (АЛ-31Ф), gunfire_shaker (ГШ-30-1)',
-      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt (Р-27/Р-73)'
+      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt (Р-27/Р-73)',
+      rudderPedalEffect: 'Педали: скоростной напор киля 22 кгс, толчки передней стойки, демпфирование 80%'
     }
   },
   'dcs-su-33': {
@@ -46,6 +136,7 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
     controlSystemName: 'Бустерное гидроуправление с ПГО (переднее горизонтальное оперение), АРУ-В и морской балансировкой',
     rlePitchForceKg: 15.0,
     rleRollForceKg: 7.2,
+    rleRudderForceKg: 22.5,
     rleGGradient: '2.7 – 4.0 кгс/G',
     rleStickTravel: '+145 мм / -105 мм, ±95 мм',
     rleDocument: 'РЛЭ самолета Су-33 (Т-10К) / Аэродинамика палубной авиации ОКБ Сухого',
@@ -57,7 +148,8 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
       dampeningEffect: 'smart_damper (Static: 58%, Dynamic: 62%)',
       trimEffect: 'trim (Hardware Trim)',
       shakerEffects: 'aoa_stall_shaker (порог 18.0°), afterburner_shaker, gunfire_shaker',
-      joltsEffects: 'landing_jolt (жесткий удар о палубу авианосца без выравнивания), gear_jolt'
+      joltsEffects: 'landing_jolt (жесткий удар о палубу авианосца без выравнивания), gear_jolt',
+      rudderPedalEffect: 'Педали: скоростной напор руля направления, усиленный демпфер 80%'
     }
   },
 
@@ -546,17 +638,17 @@ export const AIRCRAFT_RLE_SPECS: Record<string, AircraftRleData> = {
  * Falls back to intelligent category defaults if specific aircraft is not directly mapped.
  */
 export function getAircraftRleData(aircraftId: string, category: string, isHelicopter?: boolean): AircraftRleData {
-  if (AIRCRAFT_RLE_SPECS[aircraftId]) {
-    return AIRCRAFT_RLE_SPECS[aircraftId];
-  }
+  let data: AircraftRleData;
 
-  // Generic fallback based on flight architecture
-  if (isHelicopter || category === 'helicopter') {
-    return {
+  if (AIRCRAFT_RLE_SPECS[aircraftId]) {
+    data = { ...AIRCRAFT_RLE_SPECS[aircraftId] };
+  } else if (isHelicopter || category === 'helicopter') {
+    data = {
       controlArchitecture: 'helicopter_force_trim',
       controlSystemName: 'Вертолетная гидросистема с пружинными механизмами загрузки и электромагнитным тормозом Force Trim',
       rlePitchForceKg: 4.0,
       rleRollForceKg: 2.8,
+      rleRudderForceKg: 5.0,
       rleGGradient: 'Отсутствует (вертолетная кинематика)',
       rleStickTravel: 'Ход циклика ~240 мм',
       rleDocument: 'Руководство по летной эксплуатации вертолета (РЛЭ / NATOPS)',
@@ -566,19 +658,19 @@ export function getAircraftRleData(aircraftId: string, category: string, isHelic
       ffbEffectBreakdown: {
         pitchSpringEffect: 'simple_spring с Force Release',
         dampeningEffect: 'smart_damper (Static: 65%, Dynamic: 25%)',
-        trimEffect: 'trim (Hardware Trim)',
+        trimEffect: 'trim (Hardware Trim: force_release_allowed: true для РУС и педалей)',
         shakerEffects: 'rotor_shaker, etl_shaker, vorterx_state_shaker',
-        joltsEffects: 'landing_jolt'
+        joltsEffects: 'landing_jolt',
+        rudderPedalEffect: 'Педали путевого управления: полное снятие усилий по Force Trim, лопастная вибрация хвостового винта'
       }
     };
-  }
-
-  if (category === 'prop_warbird') {
-    return {
+  } else if (category === 'prop_warbird') {
+    data = {
       controlArchitecture: 'mechanical',
       controlSystemName: 'Прямая обратимая механическая проводка управления без гидроусилителей с аэродинамической компенсацией',
       rlePitchForceKg: 20.0,
       rleRollForceKg: 11.0,
+      rleRudderForceKg: 28.0,
       rleGGradient: '3.5 – 5.0 кгс/G',
       rleStickTravel: '+140 мм / -100 мм, ±90 мм',
       rleDocument: 'Руководство по летной эксплуатации самолета (РЛЭ / Pilot Flight Operating Instructions)',
@@ -590,17 +682,17 @@ export function getAircraftRleData(aircraftId: string, category: string, isHelic
         dampeningEffect: 'smart_damper (Static: 35%, Dynamic: 65%)',
         trimEffect: 'elevator_weight + trim',
         shakerEffects: 'aoa_stall_shaker, gunfire_shaker, engine_shaker',
-        joltsEffects: 'landing_jolt, gear_jolt'
+        joltsEffects: 'landing_jolt, gear_jolt',
+        rudderPedalEffect: 'Педали: прямое аэродинамическое затяжеление руля направления до 28 кгс, обдув винта'
       }
     };
-  }
-
-  if (aircraftId.includes('f-16') || aircraftId.includes('viper') || aircraftId.includes('f-22') || category === 'modern_jet' && aircraftId.includes('fa-18')) {
-    return {
+  } else if (aircraftId.includes('f-16') || aircraftId.includes('viper') || aircraftId.includes('f-22') || (category === 'modern_jet' && aircraftId.includes('fa-18'))) {
+    data = {
       controlArchitecture: 'fly_by_wire',
       controlSystemName: 'Цифровая система дистанционного управления (ЭДСУ / FBW) с искусственным загрузочным механизмом',
       rlePitchForceKg: 13.0,
       rleRollForceKg: 7.0,
+      rleRudderForceKg: 17.0,
       rleGGradient: '2.0 – 2.8 кгс/G',
       rleStickTravel: 'Короткоходный загрузочный механизм',
       rleDocument: 'USAF / USN Flight Control System Engineering Specification',
@@ -612,29 +704,51 @@ export function getAircraftRleData(aircraftId: string, category: string, isHelic
         dampeningEffect: 'smart_damper (Static: 55%, Dynamic: 50%)',
         trimEffect: 'trim (Hardware Trim)',
         shakerEffects: 'aoa_stall_shaker, afterburner_shaker, gunfire_shaker',
-        joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt'
+        joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt',
+        rudderPedalEffect: 'Адаптивный отклик педалей с ограничением скольжения по скорости (Rudder limiter)'
+      }
+    };
+  } else {
+    // Classic jet fighter with hydraulic boosters
+    data = {
+      controlArchitecture: 'hydromechanical_boosted',
+      controlSystemName: 'Необратимое гидробустерное управление с автоматом регулировки усилий (АРУ) и пружинными загружателями',
+      rlePitchForceKg: 14.5,
+      rleRollForceKg: 7.5,
+      rleRudderForceKg: 20.0,
+      rleGGradient: '2.4 – 3.6 кгс/G',
+      rleStickTravel: '+135 мм / -95 мм, ±85 мм',
+      rleDocument: 'Руководство по летной эксплуатации (РЛЭ / NATOPS Flight Manual)',
+      aoaBuffetOnsetDeg: 18.0,
+      vStallKmh: 220,
+      trimMethod: 'Электромеханический механизм триммирования (МЭТ) со смещением центра пружинного загружателя',
+      ffbEffectBreakdown: {
+        pitchSpringEffect: 'simple_spring (загружатель АРУ) + airspeed_spring',
+        dampeningEffect: 'smart_damper (Static: 55%, Dynamic: 55%)',
+        trimEffect: 'trim (Hardware Trim)',
+        shakerEffects: 'aoa_stall_shaker, afterburner_shaker, gunfire_shaker',
+        joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt',
+        rudderPedalEffect: 'Педали: скоростной напор на киле, толчки передней стойки, демпфирование 80%'
       }
     };
   }
 
-  // Classic jet fighter with hydraulic boosters
-  return {
-    controlArchitecture: 'hydromechanical_boosted',
-    controlSystemName: 'Необратимое гидробустерное управление с автоматом регулировки усилий (АРУ) и пружинными загружателями',
-    rlePitchForceKg: 14.5,
-    rleRollForceKg: 7.5,
-    rleGGradient: '2.4 – 3.6 кгс/G',
-    rleStickTravel: '+135 мм / -95 мм, ±85 мм',
-    rleDocument: 'Руководство по летной эксплуатации (РЛЭ / NATOPS Flight Manual)',
-    aoaBuffetOnsetDeg: 18.0,
-    vStallKmh: 220,
-    trimMethod: 'Электромеханический механизм триммирования (МЭТ) со смещением центра пружинного загружателя',
-    ffbEffectBreakdown: {
-      pitchSpringEffect: 'simple_spring (загружатель АРУ) + airspeed_spring',
-      dampeningEffect: 'smart_damper (Static: 55%, Dynamic: 55%)',
-      trimEffect: 'trim (Hardware Trim)',
-      shakerEffects: 'aoa_stall_shaker, afterburner_shaker, gunfire_shaker',
-      joltsEffects: 'landing_jolt, gear_jolt, weapon_release_jolt'
+  // Ensure rleRudderForceKg is defined if omitted in individual preset
+  if (!data.rleRudderForceKg) {
+    if (data.controlArchitecture === 'helicopter_force_trim') {
+      data.rleRudderForceKg = 5.0;
+    } else if (data.controlArchitecture === 'mechanical') {
+      data.rleRudderForceKg = Math.round(data.rlePitchForceKg * 1.35 * 10) / 10;
+    } else {
+      data.rleRudderForceKg = Math.round(data.rlePitchForceKg * 1.4 * 10) / 10;
     }
-  };
+  }
+
+  if (!data.ffbEffectBreakdown.rudderPedalEffect) {
+    data.ffbEffectBreakdown.rudderPedalEffect = data.controlArchitecture === 'helicopter_force_trim'
+      ? 'Путевое управление: электромагнитное снятие усилий Force Trim, вибрации хвостового винта'
+      : `Педали: скоростной напор руля направления (${data.rleRudderForceKg} кгс), демпфер 80%, толчки передней стойки`;
+  }
+
+  return data;
 }

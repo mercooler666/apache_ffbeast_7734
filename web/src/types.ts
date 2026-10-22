@@ -38,6 +38,7 @@ export interface AircraftPreset {
   controlSystemName?: string;
   rlePitchForceKg?: number;
   rleRollForceKg?: number;
+  rleRudderForceKg?: number;
   rleGGradient?: string;
   rleStickTravel?: string;
   rleDocument?: string;
@@ -50,6 +51,7 @@ export interface AircraftPreset {
     trimEffect: string;
     shakerEffects: string;
     joltsEffects: string;
+    rudderPedalEffect?: string;
   };
 }
 

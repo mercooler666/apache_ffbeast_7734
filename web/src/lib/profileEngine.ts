@@ -16,6 +16,71 @@ import { getAircraftRleData } from './aircraftRleDatabase';
 
 const RAW_AIRCRAFT_DATABASE: AircraftPreset[] = [
   // ==========================================
+  // JUST FLY UNIVERSAL ARCHETYPES (ЭТАЛОНЫ)
+  // ==========================================
+  {
+    id: 'universal-heavy-jet',
+    name: 'Эталон Just Fly: Тяжелый гидробустерный истребитель (Су-27 / F-15 / МиГ-29)',
+    category: 'modern_jet',
+    simName: 'DCS World',
+    simCode: 1,
+    moduleCode: 'Su-27_F-15_Universal',
+    vMaxKmh: 1450,
+    aoaStallDeg: 24.0,
+    rollPitchRatio: 0.65,
+    hasAfterburner: true,
+    hasAirbrake: true,
+    engineType: 'Турбореактивный с форсажем (АЛ-31Ф / F100)',
+    description: 'Эталонный профиль Just Fly: необратимые гидроусилители БУ-250А, пружинный загружатель АРУ-В, скоростной напор Q-feel, триммирование МЭТ и активные педали'
+  },
+  {
+    id: 'universal-fbw-jet',
+    name: 'Эталон Just Fly: Цифровой FBW / ЭДСУ истребитель (F/A-18C / F-16C / Mirage)',
+    category: 'modern_jet',
+    simName: 'DCS World',
+    simCode: 1,
+    moduleCode: 'FA-18C_F-16C_Universal',
+    vMaxKmh: 1400,
+    aoaStallDeg: 25.0,
+    rollPitchRatio: 0.65,
+    hasAfterburner: true,
+    hasAirbrake: true,
+    engineType: 'Турбовентиляторный с форсажем (F404 / F110)',
+    description: 'Эталонный профиль Just Fly: алгоритмы FCC/FLCS, градиент перегрузки G-feel, синтетический шейкер срыва, демпфирование сервоприводов и рудер-лимитер'
+  },
+  {
+    id: 'universal-prop-warbird',
+    name: 'Эталон Just Fly: Поршневой истребитель WWII (P-51D / Bf 109 / Spitfire)',
+    category: 'prop_warbird',
+    simName: 'DCS World',
+    simCode: 1,
+    moduleCode: 'P-51D_Bf109_Universal',
+    vMaxKmh: 720,
+    aoaStallDeg: 16.0,
+    rollPitchRatio: 0.55,
+    hasAfterburner: false,
+    hasAirbrake: false,
+    engineType: 'Поршневой V-12 / Звездообразный с винтом',
+    description: 'Эталонный профиль Just Fly: 100% обратимая аэродинамика, обдув винта (propwash), затяжеление рулей на скорости до 28 кгс на педалях, весовая компенсация'
+  },
+  {
+    id: 'universal-helicopter',
+    name: 'Эталон Just Fly: Боевой / Транспортный вертолет (Ми-8 / UH-1H / AH-64 / Ка-50)',
+    category: 'helicopter',
+    simName: 'DCS World',
+    simCode: 1,
+    moduleCode: 'Mi-8_UH-1_Universal',
+    vMaxKmh: 280,
+    aoaStallDeg: 0,
+    rollPitchRatio: 0.85,
+    hasAfterburner: false,
+    hasAirbrake: false,
+    engineType: 'Газотурбинный (ТВ3-117 / T700)',
+    description: 'Эталонный профиль Just Fly: вертолетный Force Trim Release (снятие усилий кнопкой для РУС и педалей), лопастная частота 1/rev-4/rev, тряска косой обдувки (ETL)',
+    isHelicopter: true
+  },
+
+  // ==========================================
   // DCS WORLD: MODERN JETS
   // ==========================================
   {
@@ -1466,8 +1531,10 @@ export interface ProfileResult {
   aircraft: AircraftPreset;
   pitchForceKg: number;
   rollForceKg: number;
+  rudderForceKg: number;
   effectivePitchForceKg: number;
   effectiveRollForceKg: number;
+  effectiveRudderForceKg: number;
   flightStyle: FlightStyle;
   requiredTorqueNm: number;
   maxMotorTorqueNm: number;
@@ -1610,14 +1677,32 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
   const rollForceKg = Number((config.maxForceKg * aircraft.rollPitchRatio).toFixed(1));
   const effectiveRollForceKg = Number((effectivePitchForceKg * aircraft.rollPitchRatio).toFixed(1));
 
+  // Rudder force physics:
+  // Human legs are significantly stronger than arms. Authentic RLE pedal loads are typically
+  // 1.35x - 1.5x of pitch stick loads on jets/warbirds (e.g. 20-28 kgf) and ~5 kgf on helicopters.
+  const rudderForceKg = (aircraft.rleRudderForceKg && aircraft.rleRudderForceKg > 0)
+    ? aircraft.rleRudderForceKg
+    : (aircraft.isHelicopter ? 5.0 : Math.round(config.maxForceKg * 1.4 * 10) / 10);
+
+  let effectiveRudderForceKg = rudderForceKg;
+  if (flightStyle === 'hardcore') {
+    effectiveRudderForceKg = aircraft.rleRudderForceKg || rudderForceKg;
+  } else if (flightStyle === 'casual') {
+    effectiveRudderForceKg = Number((rudderForceKg * 0.5).toFixed(1));
+  } else if (flightStyle === 'aerobatic') {
+    effectiveRudderForceKg = 2.5;
+  }
+
   // Required motor torque: Tau = (F * 9.81 * L) / gear_ratio (calculated on effective peak force)
   const requiredTorqueNm = Number(((effectivePitchForceKg * 9.81 * armLengthM) / gearRatio).toFixed(2));
   const maxMotorTorqueNm = MOTOR_RATINGS[config.motorType].maxTorqueNm;
   const isSafe = requiredTorqueNm <= maxMotorTorqueNm;
 
   // Damping values based on effective force
+  // For pedals, higher dynamic damping (70-85%) is critical to prevent natural leg muscle tremor oscillations
   const dampPitch = Math.min(85, Math.max(20, Math.round(18 + effectivePitchForceKg * 3.5)));
   const dampRoll = Math.min(80, Math.max(15, Math.round(15 + effectiveRollForceKg * 3.5)));
+  const dampRudder = Math.min(90, Math.max(30, Math.round(35 + effectiveRudderForceKg * 2.2)));
 
   const vMax = aircraft.vMaxKmh;
 
@@ -1626,8 +1711,11 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     return isEffActive(id);
   };
 
-  const buildAxis = (_axisName: string, maxAxisForce: number, dampVal: number) => {
+  const buildAxis = (axisName: 'ailerons' | 'elevator' | 'rudder', maxAxisForce: number, dampVal: number) => {
     const effs: Record<string, any> = {};
+    const isRudder = axisName === 'rudder';
+    const isElevator = axisName === 'elevator';
+    const isHeli = aircraft.isHelicopter || aircraft.category === 'helicopter';
 
     // 1. Direct X (standard direct input forces)
     if (isEffActive('direct_x')) {
@@ -1642,9 +1730,12 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
 
     // 2. Hardware Trim
     if (isEffActive('trim')) {
+      // For helicopters, both cyclic and anti-torque pedals release together on Force Trim press!
+      // For fixed-wing airplanes, pedals are trimmed via trim switches/tabs without force release
+      const forceRelease = isHeli ? true : !isRudder;
       effs.trim = {
         active: true,
-        force_release_allowed: true,
+        force_release_allowed: forceRelease,
         trim_buttons_allowed: true,
         trim_reset_allowed: true,
         hardware_trim_buttons: { minus: 0, plus: 0 },
@@ -1661,7 +1752,9 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       effs.smart_damper = {
         active: true,
         dynamic_dampening: dampVal,
-        static_dampening: Math.min(100, Math.max(65, Math.round(70 + maxAxisForce * 1.5))),
+        static_dampening: isRudder
+          ? Math.min(95, Math.max(70, Math.round(75 + maxAxisForce * 0.8)))
+          : Math.min(100, Math.max(65, Math.round(70 + maxAxisForce * 1.5))),
         total_effect_strength: 100
       };
     }
@@ -1686,7 +1779,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // 6. Prop thrust spring (wash effect)
+    // 6. Prop thrust spring (wash effect) - on warbirds, wash blows over elevator and vertical stabilizer/rudder!
     if (isEffActive('prop_thrust_spring')) {
       effs.prop_thrust_spring = {
         active: true,
@@ -1696,8 +1789,8 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // 7. AoA spring
-    if (isEffActive('aoa_spring')) {
+    // 7. AoA spring (only applies to pitch/roll stick, not yaw pedals)
+    if (isEffActive('aoa_spring') && !isRudder) {
       effs.aoa_spring = {
         active: true,
         curve1: generateSCurve(aircraft.aoaStallDeg > 0 ? aircraft.aoaStallDeg : 22, Number((maxAxisForce * 0.4).toFixed(2))),
@@ -1706,8 +1799,8 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // 8. G-Force spring
-    if (isEffActive('g_force_spring')) {
+    // 8. G-Force spring (primarily pitch stick)
+    if (isEffActive('g_force_spring') && !isRudder) {
       effs.g_force_spring = {
         active: true,
         curve1: generateLinearCurve(9.0, Number((maxAxisForce * 0.5).toFixed(2))),
@@ -1716,8 +1809,8 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // 9. Elevator Weight
-    if (isEffActive('elevator_weight')) {
+    // 9. Elevator Weight (only applies to pitch elevator, never pedals or ailerons)
+    if (isEffActive('elevator_weight') && isElevator) {
       effs.elevator_weight = {
         active: true,
         weight_force: 15,
@@ -1726,7 +1819,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     }
 
     // 10. Local AoA
-    if (isEffActive('local_aoa')) {
+    if (isEffActive('local_aoa') && !isRudder) {
       effs.local_aoa = {
         active: true,
         factor: 50,
@@ -1755,7 +1848,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
         base_frequency: 20,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(6 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 8 : 6) * shakerStrengthFactor))
       };
     }
 
@@ -1799,6 +1892,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
+    // on_ground_shaker: transmitted directly through wheels & nose gear steering linkage into pedals!
     if (isShakerActive('on_ground_shaker')) {
       effs.on_ground_shaker = {
         active: true,
@@ -1808,15 +1902,16 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
           { in: 10, out: 0 }, { in: 40, out: 20 }, { in: 80, out: 50 },
           { in: 150, out: 80 }, { in: 300, out: 100 }
         ],
-        total_effect_strength: Math.max(1, Math.round(12 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 18 : 12) * shakerStrengthFactor))
       };
     }
 
+    // gunfire_shaker: violent recoil vibration shakes entire cockpit, stick, and pedals
     if (isShakerActive('gunfire_shaker')) {
       effs.gunfire_shaker = {
         active: true,
         gunfire: [
-          { active: true, base_frequency: 20, frequency_mode: 1, total_effect_strength: Math.max(1, Math.round(12 * shakerStrengthFactor)) },
+          { active: true, base_frequency: 20, frequency_mode: 1, total_effect_strength: Math.max(1, Math.round((isRudder ? 15 : 12) * shakerStrengthFactor)) },
           { active: false, base_frequency: 20, frequency_mode: 0, total_effect_strength: 0 },
           { active: false, base_frequency: 20, frequency_mode: 0, total_effect_strength: 0 },
           { active: false, base_frequency: 20, frequency_mode: 0, total_effect_strength: 0 },
@@ -1835,13 +1930,14 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
+    // rotor_shaker: tail rotor and main rotor 1/rev frequencies
     if (isShakerActive('rotor_shaker')) {
       effs.rotor_shaker = {
         active: true,
         base_frequency: 14,
         frequency_mode: 1,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(25 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 30 : 25) * shakerStrengthFactor))
       };
     }
 
@@ -1877,6 +1973,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     // 12. Jolts (mechanical impulse forces)
     const joltFactor = flightStyle === 'aerobatic' ? 0.35 : 1.0;
 
+    // landing_jolt: nose/tail wheel landing impact kicks pedals!
     if (isEffActive('landing_jolt')) {
       effs.landing_jolt = {
         active: true,
@@ -1886,7 +1983,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
           { in: 0, out: 0 }, { in: 1, out: 20 }, { in: 2, out: 40 },
           { in: 3, out: 60 }, { in: 4, out: 80 }, { in: 5, out: 100 }
         ],
-        total_effect_strength: Math.max(1, Math.round(50 * joltFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 55 : 50) * joltFactor))
       };
     }
 
@@ -1906,7 +2003,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
         base_frequency: 20,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(35 * joltFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 40 : 35) * joltFactor))
       };
     }
 
@@ -1926,7 +2023,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
         base_frequency: 20,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(40 * joltFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 50 : 40) * joltFactor))
       };
     }
 
@@ -1935,7 +2032,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
 
   const json = {
     metadata: {
-      comment: `Apache_RealForce_Profile_${flightStyle.toUpperCase()} (Rev: ${config.revision}, Ext: +${config.extensionMm}mm, Peak: ${effectivePitchForceKg}kg)`,
+      comment: `Apache_RealForce_Profile_${flightStyle.toUpperCase()} (Rev: ${config.revision}, Ext: +${config.extensionMm}mm, Peak: ${effectivePitchForceKg}kg, Rudder: ${effectiveRudderForceKg}kg)`,
       flight_data_source: aircraft.simCode,
       flight_module: aircraft.moduleCode,
       version: {
@@ -1948,16 +2045,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     effects: {
       ailerons: buildAxis('ailerons', effectiveRollForceKg, dampRoll),
       elevator: buildAxis('elevator', effectivePitchForceKg, dampPitch),
-      rudder: {
-        direct_x: isEffActive('direct_x') ? { active: true, force: 100, periodic: 100, total_effect_strength: 100, trimmer: 100 } : { active: false },
-        smart_damper: isEffActive('smart_damper') ? { active: true, dynamic_dampening: Math.round(dampPitch * 0.75), static_dampening: 50, total_effect_strength: 100 } : { active: false },
-        simple_spring: isEffActive('simple_spring') ? {
-          active: true,
-          curve1: generateRealForceSCurve(Number((effectivePitchForceKg * 0.75).toFixed(1))),
-          dampening_contribution: 100,
-          total_effect_strength: 100
-        } : { active: false }
-      },
+      rudder: buildAxis('rudder', effectiveRudderForceKg, dampRudder),
       throttle_collective: {
         smart_damper: { active: true, dynamic_dampening: 45, static_dampening: 60, total_effect_strength: 100 },
         simple_spring: { active: false, curve1: [], total_effect_strength: 0 },
@@ -1986,8 +2074,10 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     aircraft,
     pitchForceKg,
     rollForceKg,
+    rudderForceKg,
     effectivePitchForceKg,
     effectiveRollForceKg,
+    effectiveRudderForceKg,
     flightStyle,
     requiredTorqueNm,
     maxMotorTorqueNm,
