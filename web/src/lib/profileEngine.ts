@@ -1502,12 +1502,24 @@ export function getDefaultEffectsForAircraft(aircraft: AircraftPreset): Selected
       map[def.id] = false;
       continue;
     }
+    // Afterburner / Reheat vibration: activated for afterburning jets
     if (def.id === 'afterburner_shaker') {
-      map[def.id] = aircraft.hasAfterburner;
+      map[def.id] = Boolean(aircraft.hasAfterburner);
       continue;
     }
+    // Engine vibration: active by default for propeller warbirds and non-afterburning aircraft at 100% thrust
+    if (def.id === 'engine_shaker') {
+      map[def.id] = isWarbird || !aircraft.hasAfterburner;
+      continue;
+    }
+    // Airbrake shaker: activated by default for all fixed-wing aircraft
     if (def.id === 'airbrake_shaker') {
-      map[def.id] = aircraft.hasAirbrake;
+      map[def.id] = !isHeli;
+      continue;
+    }
+    // Runway surface bumps, landing gear turbulence & gear clunk: active by default for all airplane profiles
+    if (def.id === 'on_ground_shaker' || def.id === 'gear_shaker' || def.id === 'gear_jolt') {
+      map[def.id] = true;
       continue;
     }
     map[def.id] = def.defaultEnabled;
@@ -1662,10 +1674,10 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     shakerStrengthFactor = 0.6;
     stickVibrationsEnabled = true;
   } else if (flightStyle === 'aerobatic') {
-    // "Пилотажник" - сбавить силу до минимума (уровня усилий баз VPC MongoosT ~1.8-2.0 кг) и убрать вибрации на ручке
+    // "Пилотажник" (Aldo Apache Approved) - сбавить силу до минимума (~2.0 кг) и сделать вибрации максимально минимальными (~8% едва уловимый микро-отклик)
     effectivePitchForceKg = 2.0;
-    shakerStrengthFactor = 0.0;
-    stickVibrationsEnabled = false;
+    shakerStrengthFactor = 0.08;
+    stickVibrationsEnabled = true;
   }
 
   // Gear ratio and arm length
@@ -1827,18 +1839,23 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // 11. Shakers & Vibrations (muted if flightStyle === 'aerobatic')
+    // 11. Shakers & Vibrations
+    // afterburner_shaker: deep guttural rumble (24 Hz) scaling up at 75-100% thrust into reheat detent
     if (isShakerActive('afterburner_shaker')) {
       effs.afterburner_shaker = {
         active: true,
-        base_frequency: 20,
+        base_frequency: 24, // 24 Hz deep airframe acoustic resonance of cockpit and stick
         frequency_mode: 0,
         curve1: [
-          { in: 0, out: 0 }, { in: 10, out: 19 }, { in: 20, out: 36 }, { in: 30, out: 51 },
-          { in: 40, out: 64 }, { in: 50, out: 75 }, { in: 60, out: 84 }, { in: 70, out: 91 },
-          { in: 80, out: 96 }, { in: 90, out: 99 }, { in: 100, out: 100 }
+          { in: 0, out: 0 },
+          { in: 60, out: 0 },     // Cruise / idle - smooth without noise
+          { in: 75, out: 12 },    // High dry thrust (~85% RPM) subtle airframe hum
+          { in: 85, out: 32 },    // 100% military thrust (максимал) clear turbine power hum
+          { in: 88, out: 62 },    // Reheat ignition threshold (форсажный упор) distinct ignition rumble
+          { in: 94, out: 84 },    // Intermediate reheat stage
+          { in: 100, out: 100 }   // Full afterburner (полный форсаж) powerful tactile roar
         ],
-        total_effect_strength: Math.max(1, Math.round(5 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 36 : 28) * shakerStrengthFactor))
       };
     }
 
@@ -1848,7 +1865,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
         base_frequency: 20,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round((isRudder ? 8 : 6) * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 14 : 18) * shakerStrengthFactor))
       };
     }
 
@@ -1858,17 +1875,18 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
         base_frequency: 18,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(8 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round(10 * shakerStrengthFactor))
       };
     }
 
+    // gear_shaker: aerodynamic buffeting and turbulent drag from extended landing gear struts & doors
     if (isShakerActive('gear_shaker')) {
       effs.gear_shaker = {
         active: true,
         base_frequency: 16,
         frequency_mode: 0,
         curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(5 * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 20 : 16) * shakerStrengthFactor))
       };
     }
 
@@ -1892,17 +1910,17 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
-    // on_ground_shaker: transmitted directly through wheels & nose gear steering linkage into pedals!
+    // on_ground_shaker: tarmac cracks, concrete runway plates and gravel terrain rumble directly through nosewheel steering
     if (isShakerActive('on_ground_shaker')) {
       effs.on_ground_shaker = {
         active: true,
         base_frequency: 10,
         frequency_mode: 0,
         curve1: [
-          { in: 10, out: 0 }, { in: 40, out: 20 }, { in: 80, out: 50 },
-          { in: 150, out: 80 }, { in: 300, out: 100 }
+          { in: 10, out: 0 }, { in: 40, out: 25 }, { in: 80, out: 55 },
+          { in: 150, out: 85 }, { in: 300, out: 100 }
         ],
-        total_effect_strength: Math.max(1, Math.round((isRudder ? 18 : 12) * shakerStrengthFactor))
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 26 : 18) * shakerStrengthFactor))
       };
     }
 
@@ -1920,13 +1938,20 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
       };
     }
 
+    // engine_shaker: high RPM engine vibration at 75-100% throttle for prop & non-reheat aircraft
     if (isShakerActive('engine_shaker')) {
       effs.engine_shaker = {
         active: true,
-        base_frequency: 18,
+        base_frequency: 22,
         frequency_mode: 1,
-        curve1: generateLinearCurve(100, 100),
-        total_effect_strength: Math.max(1, Math.round(20 * shakerStrengthFactor))
+        curve1: [
+          { in: 0, out: 0 },
+          { in: 50, out: 10 },
+          { in: 75, out: 25 },
+          { in: 90, out: 60 },
+          { in: 100, out: 100 }
+        ],
+        total_effect_strength: Math.max(1, Math.round((isRudder ? 24 : 20) * shakerStrengthFactor))
       };
     }
 
@@ -1971,7 +1996,7 @@ export function generateFFBeastProfile(config: ProfileGeneratorConfig): ProfileR
     }
 
     // 12. Jolts (mechanical impulse forces)
-    const joltFactor = flightStyle === 'aerobatic' ? 0.35 : 1.0;
+    const joltFactor = flightStyle === 'aerobatic' ? 0.08 : (flightStyle === 'casual' ? 0.5 : 1.0);
 
     // landing_jolt: nose/tail wheel landing impact kicks pedals!
     if (isEffActive('landing_jolt')) {

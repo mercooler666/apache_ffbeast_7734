@@ -997,12 +997,12 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                       2.0 кг
                     </div>
                     <p className="text-[11px] text-slate-600 leading-snug">
-                      Специальный пилотажный режим для максимально четкого управления без армрестлинга.
+                      Специальный пилотажный режим для максимально четкого управления без армрестлинга: легкие усилия 2.0 кг и максимально минимальные вибрации (~8%) для филигранной точности траектории.
                     </p>
                   </div>
                   <div className="mt-3 pt-2 border-t border-slate-100 text-[10px] text-slate-500 flex items-center justify-between">
                     <span>Вибрации:</span>
-                    <strong className="text-emerald-700 font-bold">🚫 Отключены</strong>
+                    <strong className="text-emerald-700 font-bold">~8% Минимальные</strong>
                   </div>
                 </div>
               </div>
