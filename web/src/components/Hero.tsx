@@ -1,6 +1,6 @@
 import React from 'react';
 import type { ProductMode, PageRoute } from '../types';
-import { ShieldCheck, Zap, Gauge, ArrowRight, Wrench, Sparkles, ShoppingBag, ExternalLink } from 'lucide-react';
+import { Gauge, Zap, Sparkles, Wrench, ShoppingBag, ExternalLink, ArrowRight, Layers } from 'lucide-react';
 
 interface HeroProps {
   mode: ProductMode;
@@ -16,115 +16,93 @@ export const Hero: React.FC<HeroProps> = ({
   const isFlight = mode === 'flight';
 
   return (
-    <div className="relative overflow-hidden pt-10 pb-16 md:py-20 bg-gradient-to-b from-sky-50/70 via-white to-slate-50 border-b border-slate-200">
+    <div className="relative pt-8 pb-14 md:py-18 overflow-hidden border-b border-slate-200/80">
       
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-sky-200/40 rounded-full blur-[130px] pointer-events-none" />
-      <div className="absolute bottom-0 left-10 w-[350px] h-[350px] bg-blue-100/50 rounded-full blur-[100px] pointer-events-none" />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      {/* Liquid Glass ambient fluid background light (smooth, non-intrusive) */}
+      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-sky-200/35 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute bottom-4 left-6 w-[450px] h-[450px] bg-slate-200/40 rounded-full blur-[120px] pointer-events-none -z-10" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           
           {/* Left Column: Value Proposition & Copy */}
-          <div className="lg:col-span-7 text-left space-y-6">
+          <div className="lg:col-span-7 space-y-6">
             
-            {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-sky-200 text-xs font-semibold text-slate-700 shadow-sm">
-              <span className="w-2.5 h-2.5 rounded-full bg-sky-500 animate-pulse" />
-              <span className="font-bold text-sky-900">
-                {isFlight ? 'Активная телеметрия для DCS World, War Thunder и MSFS' : 'Direct Drive база руля 15-25 Нм на BLDC'}
-              </span>
-              <span className="text-slate-300">|</span>
-              <span className="text-amber-600 font-bold">1/4 цены коммерческих баз</span>
-            </div>
-
-            {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
-              {isFlight ? (
-                <>
-                  Профессиональный <br />
-                  <span className="bg-gradient-to-r from-sky-600 via-blue-700 to-indigo-800 bg-clip-text text-transparent">
-                    Active FFB джойстик
-                  </span> <br />
-                  для авиасимуляторов.
-                </>
-              ) : (
-                <>
-                  Мощный промышленный <br />
-                  <span className="bg-gradient-to-r from-red-600 via-amber-600 to-orange-600 bg-clip-text text-transparent">
-                    Direct Drive руль
-                  </span> <br />
-                  без переплаты за бренд.
-                </>
-              )}
+            {/* Hallmark Editorial Headline: solid, high-contrast, confident */}
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-slate-900 tracking-tight leading-[1.12]">
+              {isFlight
+                ? 'Профессиональный активный FFB джойстик для симуляторов'
+                : 'Промышленный Direct Drive руль без наценок за бренд'}
             </h1>
 
-            {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 max-w-2xl leading-relaxed">
+            {/* Hallmark Single-Sentence Description: concrete, real physics */}
+            <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
               {isFlight
-                ? "Забудьте о пружинах и кулачках, всегда тянущих ручку с одной силой. FFBeast симулирует реальную физику: скоростной напор воздуха (V²), обдув винтом, срыв потока (AoA buffet), отдачу пушки и гидравлический триммер."
-                : "Хватит мириться с вялыми ременными рулями или переплачивать тысячи долларов за брендовые 5 Нм базы. Соберите или закажите 15-25 Нм Direct Drive на проверенной электронике ODrive и BLDC двигателях."}
+                ? 'Прямой привод на бесщеточных двигателях ODrive с аппаратным расчетом скоростного напора воздуха (V²), предсрывного бафтинга крыла, обдува винтом и вертолетного снятия усилий Force Trim.'
+                : 'Прямой привод 15–25 Нм на проверенных бесщеточных сервомоторах с частотой опроса 1000 Гц и мгновенной физической отдачей дорожного полотна.'}
             </p>
 
-            {/* Quick Feature Pillars (Light Cards) */}
-            <div className="grid grid-cols-3 gap-3 pt-2 max-w-lg">
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-semibold mb-1">
-                  <Gauge className="w-4 h-4 text-sky-600" />
+            {/* Specs Grid: Liquid Glass Cards with Specular Rims */}
+            <div className="grid grid-cols-3 gap-3 pt-1 max-w-lg">
+              <div className="liquid-glass rounded-2xl p-3.5">
+                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium mb-1">
+                  <Gauge className="w-3.5 h-3.5 text-sky-700" />
                   <span>Крутящий момент</span>
                 </div>
-                <div className="text-2xl font-black text-slate-900 font-mono">
+                <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono">
                   {isFlight ? 'до 15 Нм' : 'до 25 Нм'}
                 </div>
                 <div className="text-[11px] text-slate-500 mt-0.5">FOC без коггинга</div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-semibold mb-1">
-                  <Zap className="w-4 h-4 text-amber-600" />
+              <div className="liquid-glass rounded-2xl p-3.5">
+                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium mb-1">
+                  <Zap className="w-3.5 h-3.5 text-amber-600" />
                   <span>Задержка DSP</span>
                 </div>
-                <div className="text-2xl font-black text-slate-900 font-mono">&lt; 1 мс</div>
+                <div className="text-xl sm:text-2xl font-black text-slate-900 font-mono">&lt; 1 мс</div>
                 <div className="text-[11px] text-slate-500 mt-0.5">Частота 1000 Гц</div>
               </div>
 
-              <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm">
-                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-semibold mb-1">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>Экономия</span>
+              <div className="liquid-glass rounded-2xl p-3.5">
+                <div className="flex items-center gap-1.5 text-slate-500 text-xs font-medium mb-1">
+                  <Layers className="w-3.5 h-3.5 text-emerald-700" />
+                  <span>Управление</span>
                 </div>
-                <div className="text-2xl font-black text-emerald-600 font-mono">до 75%</div>
-                <div className="text-[11px] text-slate-500 mt-0.5">vs Brunner / Moza</div>
+                <div className="text-xl sm:text-2xl font-black text-emerald-800 font-mono">
+                  {isFlight ? '3 оси FFB' : 'Direct Drive'}
+                </div>
+                <div className="text-[11px] text-slate-500 mt-0.5">{isFlight ? 'РУС + Педали' : 'Стальной вал'}</div>
               </div>
             </div>
 
-            {/* Primary Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3 pt-4">
+            {/* Primary Action Buttons: Liquid Glass Tactile Buttons */}
+            <div className="flex flex-wrap items-center gap-3 pt-2">
               {isFlight ? (
                 <>
                   <button
                     onClick={() => onNavigate('profile-wizard')}
-                    className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-sky-600 to-blue-700 hover:from-sky-500 hover:to-blue-600 shadow-xl shadow-sky-600/25 transition cursor-pointer"
+                    className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-bold text-white bg-sky-700 hover:bg-sky-600 shadow-md shadow-sky-800/15 transition-colors cursor-pointer active:scale-[0.985]"
                   >
-                    <Sparkles className="w-4 h-4 text-amber-300 animate-spin-slow" />
-                    <span>Конструктор профилей (DCS & WT)</span>
+                    <Sparkles className="w-4 h-4 text-sky-200" />
+                    <span>Сгенерировать профиль (DCS & WT)</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
                   <button
                     onClick={() => onNavigate('configurator')}
-                    className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-sm transition cursor-pointer"
+                    className="flex items-center gap-2 px-5 py-3.5 rounded-2xl text-xs sm:text-sm font-semibold text-slate-800 liquid-glass hover:bg-white transition-colors cursor-pointer active:scale-[0.985]"
                   >
-                    <Wrench className="w-4 h-4 text-sky-600" />
-                    <span>Калькулятор сборки железа</span>
+                    <Wrench className="w-4 h-4 text-slate-600" />
+                    <span>Калькулятор сборки</span>
                   </button>
                 </>
               ) : (
                 <button
                   onClick={() => onNavigate('configurator')}
-                  className="flex items-center gap-2 px-6 py-4 rounded-xl text-sm font-bold tracking-wide text-white bg-gradient-to-r from-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 shadow-xl shadow-red-600/25 transition cursor-pointer"
+                  className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-xs sm:text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 shadow-md transition-colors cursor-pointer active:scale-[0.985]"
                 >
-                  <Wrench className="w-4 h-4 text-white" />
+                  <Wrench className="w-4 h-4" />
                   <span>Калькулятор сборки руля (BOM)</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -132,36 +110,36 @@ export const Hero: React.FC<HeroProps> = ({
 
               <button
                 onClick={onOpenShop}
-                className="flex items-center gap-1.5 px-4 py-4 rounded-xl text-xs font-bold uppercase tracking-wider text-slate-600 hover:text-slate-900 transition cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-3.5 rounded-2xl text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-white/60 transition-colors cursor-pointer"
               >
-                <ShoppingBag className="w-4 h-4" />
-                <span>Готовые базы</span>
+                <ShoppingBag className="w-4 h-4 text-slate-500" />
+                <span>Готовые киты</span>
               </button>
             </div>
 
-            {/* Compatible Grips & Simulators */}
-            <div className="pt-4 border-t border-slate-200">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-2">
-                {isFlight ? 'Совместимость с ручками и симуляторами:' : 'Поддерживаемые симуляторы и быстросъемы:'}
+            {/* Hardware & Simulator Compatibility (Clean Liquid Glass Tags) */}
+            <div className="pt-3 border-t border-slate-200/80">
+              <span className="text-xs font-semibold text-slate-500 block mb-2">
+                {isFlight ? 'Совместимость с ручками и симуляторами:' : 'Поддерживаемые симуляторы:'}
               </span>
-              <div className="flex flex-wrap gap-2 text-xs font-semibold text-slate-700">
+              <div className="flex flex-wrap gap-1.5 text-xs text-slate-700 font-medium">
                 {isFlight ? (
                   <>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">Thrustmaster (Native)</span>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">Virpil VPC (Native)</span>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">VKB (Pass-through)</span>
-                    <span className="px-3 py-1 rounded-lg bg-sky-100/70 text-sky-900 border border-sky-200">DCS World</span>
-                    <span className="px-3 py-1 rounded-lg bg-sky-100/70 text-sky-900 border border-sky-200">War Thunder</span>
-                    <span className="px-3 py-1 rounded-lg bg-sky-100/70 text-sky-900 border border-sky-200">MSFS 2024/2020</span>
-                    <span className="px-3 py-1 rounded-lg bg-sky-100/70 text-sky-900 border border-sky-200">IL-2 Sturmovik</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">Thrustmaster (Native)</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">Virpil VPC (Native)</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">VKB (Pass-through)</span>
+                    <span className="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-200">DCS World</span>
+                    <span className="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-200">War Thunder</span>
+                    <span className="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-200">MSFS 2024</span>
+                    <span className="px-2.5 py-1 rounded-xl bg-sky-100 text-sky-900 border border-sky-200">Ил-2 Штурмовик</span>
                   </>
                 ) : (
                   <>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">Assetto Corsa / ACC</span>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">iRacing</span>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">BeamNG.drive</span>
-                    <span className="px-3 py-1 rounded-lg bg-white border border-slate-200 shadow-xs">rFactor 2</span>
-                    <span className="px-3 py-1 rounded-lg bg-red-100/70 text-red-900 border border-red-200">70mm PCD Quick Release</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">Assetto Corsa / ACC</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">iRacing</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">BeamNG.drive</span>
+                    <span className="px-2.5 py-1 rounded-xl liquid-glass-pill">rFactor 2</span>
+                    <span className="px-2.5 py-1 rounded-xl bg-red-100 text-red-900 border border-red-200">70mm PCD Quick Release</span>
                   </>
                 )}
               </div>
@@ -169,39 +147,36 @@ export const Hero: React.FC<HeroProps> = ({
 
           </div>
 
-          {/* Right Column: Hardware Showcase / Interactive Visual (Links to ffbeast.github.io documentation) */}
-          <div className="lg:col-span-5 relative">
+          {/* Right Column: Hardware Showcase / Interactive Liquid Glass Visual */}
+          <div className="lg:col-span-5">
             <a
               href={isFlight ? "https://ffbeast.github.io/docs/en/joystick.html" : "https://ffbeast.github.io/docs/en/wheel.html"}
               target="_blank"
               rel="noopener noreferrer"
-              className="block group cursor-pointer focus:outline-none focus:ring-2 focus:ring-sky-500 rounded-3xl"
-              title={isFlight ? "Открыть документацию по джойстику на ffbeast.github.io (откроется в новой вкладке)" : "Открыть документацию по рулевой базе на ffbeast.github.io (откроется в новой вкладке)"}
+              className="block group cursor-pointer focus-visible:outline-none rounded-3xl"
+              title={isFlight ? "Открыть документацию по джойстику на ffbeast.github.io" : "Открыть документацию по рулевой базе на ffbeast.github.io"}
             >
-              <div className="relative rounded-3xl p-2 bg-gradient-to-b from-sky-200/60 via-white to-slate-200 shadow-2xl transition-all duration-300 group-hover:shadow-sky-500/25 group-hover:scale-[1.015]">
-                <div className="bg-white rounded-[22px] overflow-hidden border border-slate-200 p-6 relative">
+              <div className="liquid-glass rounded-3xl p-3 shadow-lg transition-transform duration-200 group-hover:scale-[1.01]">
+                <div className="bg-white/85 rounded-2xl overflow-hidden border border-slate-200/90 p-5 space-y-4">
                   
-                  {/* Status Badge in Showcase */}
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-800 group-hover:text-sky-600 transition-colors">
-                        {isFlight ? 'FFBeast Base V5 (All-Metal)' : 'FFBeast DD Base (15 Nm)'}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5 text-[11px] font-mono text-sky-800 bg-sky-50 group-hover:bg-sky-100 px-2.5 py-1 rounded-full border border-sky-200 group-hover:border-sky-300 font-semibold transition-colors shadow-xs">
+                  {/* Status Bar */}
+                  <div className="flex items-center justify-between text-xs font-mono">
+                    <span className="font-bold text-slate-800">
+                      {isFlight ? 'FFBeast Base V5 (All-Metal)' : 'FFBeast DD Base (15 Nm)'}
+                    </span>
+                    <span className="text-[11px] text-sky-700 bg-sky-50 px-2 py-0.5 rounded-lg border border-sky-200 flex items-center gap-1 font-semibold">
                       <span>ffbeast.github.io</span>
-                      <ExternalLink className="w-3 h-3 text-sky-500 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
-                    </div>
+                      <ExternalLink className="w-3 h-3" />
+                    </span>
                   </div>
 
-                  {/* Main Media Preview */}
-                  <div className="aspect-[4/3] rounded-2xl bg-slate-900 border border-slate-200 flex items-center justify-center overflow-hidden relative shadow-inner">
+                  {/* Media Viewport */}
+                  <div className="aspect-[4/3] rounded-2xl bg-slate-950 border border-slate-800 flex items-center justify-center overflow-hidden relative shadow-inner">
                     {isFlight ? (
                       <img
                         src="./assets/images/joystick_rotating.gif"
-                        alt="FFBeast Flight Controls Base Rotating"
-                        className="w-full h-full object-contain filter contrast-110 group-hover:scale-105 transition-transform duration-500"
+                        alt="Механическая база FFBeast V5 в сборе"
+                        className="w-full h-full object-contain filter contrast-105"
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (!target.src.includes('ffbeast.github.io')) {
@@ -212,8 +187,8 @@ export const Hero: React.FC<HeroProps> = ({
                     ) : (
                       <img
                         src="./assets/images/wheel_crop.jpg"
-                        alt="FFBeast Direct Drive Wheel"
-                        className="w-full h-full object-cover filter brightness-95 contrast-105 group-hover:scale-105 transition-transform duration-500"
+                        alt="Direct Drive руль FFBeast"
+                        className="w-full h-full object-cover filter brightness-95"
                         onError={(e) => {
                           const target = e.currentTarget;
                           if (!target.src.includes('ffbeast.github.io')) {
@@ -223,35 +198,35 @@ export const Hero: React.FC<HeroProps> = ({
                       />
                     )}
 
-                    {/* Overlay live specs badge */}
-                    <div className="absolute bottom-3 left-3 right-3 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl p-3 flex items-center justify-between text-xs text-slate-800 shadow-md">
+                    {/* Live Specs Overlay */}
+                    <div className="absolute bottom-3 left-3 right-3 liquid-glass rounded-xl p-2.5 flex items-center justify-between text-xs text-slate-800">
                       <div>
-                        <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Механический узел</div>
-                        <div className="text-slate-900 font-black">{isFlight ? 'Стальной подвес + 9 подшипников' : 'Стальной вал Direct Drive'}</div>
+                        <div className="text-[10px] text-slate-500 font-medium">Механический узел</div>
+                        <div className="text-slate-900 font-bold">{isFlight ? 'Стальной подвес, 9 подшипников' : 'Стальной вал Direct Drive'}</div>
                       </div>
                       <div className="text-right">
-                        <div className="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Точность датчика</div>
-                        <div className="text-sky-600 font-mono font-black">20,480 CPR (AMT10E2)</div>
+                        <div className="text-[10px] text-slate-500 font-medium">Датчик положения</div>
+                        <div className="text-sky-800 font-mono font-bold">20 480 CPR (AMT10E2)</div>
                       </div>
                     </div>
                   </div>
 
-                  {/* Sub features bar */}
-                  <div className="grid grid-cols-2 gap-3 mt-4 text-xs">
-                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                      <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Физика DirectInput</div>
-                      <div className="font-bold text-slate-900 mt-0.5">Скоростной напор + Шейкеры + Трим</div>
+                  {/* Specs Columns */}
+                  <div className="grid grid-cols-2 gap-2.5 text-xs">
+                    <div className="liquid-glass-subtle rounded-xl p-2.5">
+                      <div className="text-slate-500 text-[10px] font-medium">Физика DirectInput</div>
+                      <div className="font-semibold text-slate-900 mt-0.5">Скоростной напор + Бафтинг + Трим</div>
                     </div>
-                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
-                      <div className="text-slate-500 text-[10px] uppercase font-bold tracking-wider">Питание</div>
-                      <div className="font-bold text-slate-900 mt-0.5">24V - 48V (MeanWell / Серверный)</div>
+                    <div className="liquid-glass-subtle rounded-xl p-2.5">
+                      <div className="text-slate-500 text-[10px] font-medium">Питание</div>
+                      <div className="font-semibold text-slate-900 mt-0.5">24V – 48V (MeanWell / БП)</div>
                     </div>
                   </div>
 
-                  {/* Link indicator footer */}
-                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-center gap-1.5 text-xs font-bold text-sky-600 group-hover:text-sky-700">
-                    <span>Открыть документацию на официальном сайте ffbeast.github.io</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
+                  {/* Footnote */}
+                  <div className="text-center text-[11px] text-slate-500 flex items-center justify-center gap-1">
+                    <span>Официальная инженерная документация</span>
+                    <ExternalLink className="w-3 h-3 text-sky-600" />
                   </div>
 
                 </div>
