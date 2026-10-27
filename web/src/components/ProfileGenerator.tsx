@@ -88,6 +88,64 @@ const UNIVERSAL_ARCHETYPES = [
   }
 ];
 
+export const JUSTFLY_AIRCRAFT_MAP: Record<string, { file: string; title: string; note: string }> = {
+  'dcs-su-27': {
+    file: './profiles/DCS_Su_27_From_JustFlyIt.json',
+    title: 'Su-27 Flanker',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для Су-27'
+  },
+  'dcs-mig-29s': {
+    file: './profiles/DCS_MiG_29_From_JustFlyIt.json',
+    title: 'MiG-29S Fulcrum',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для МиГ-29'
+  },
+  'dcs-fa-18c': {
+    file: './profiles/DCS_FA_18C_From_JustFlyIt.json',
+    title: 'F/A-18C Hornet',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для F/A-18C'
+  },
+  'dcs-f-5e': {
+    file: './profiles/DCS_F_5E_From_JustFlyIt.json',
+    title: 'F-5E Tiger II',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для F-5E'
+  },
+  'dcs-mi-8': {
+    file: './profiles/DCS_Mi_8_From_JustFlyIt.json',
+    title: 'Ми-8МТВ2',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для Ми-8'
+  },
+  'dcs-mi-24p': {
+    file: './profiles/DCS_Mi_24_From_JustFlyIt.json',
+    title: 'Ми-24П Hind',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для Ми-24П'
+  },
+  'dcs-uh-1h': {
+    file: './profiles/DCS_UH_1_From_JustFlyIt.json',
+    title: 'UH-1H Huey',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для UH-1H'
+  },
+  'dcs-spitfire-ix': {
+    file: './profiles/DCS_Spitfire_From_JustFlyIt.json',
+    title: 'Spitfire LF Mk IX',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для Спитфайра'
+  },
+  'dcs-p-47d': {
+    file: './profiles/DCS_P_47D_From_JustFlyIt.json',
+    title: 'P-47D-30 Thunderbolt',
+    note: 'Оригинальный профиль JustFly (Максим Савельев) для P-47D'
+  },
+  'dcs-f-14b': {
+    file: './profiles/DCS_F_14_From_FFBeast.json',
+    title: 'F-14 Tomcat',
+    note: 'Официальный эталонный профиль FFBeast Community'
+  },
+  'dcs-f-16c': {
+    file: './profiles/DCS_F_16C_From_FFBeast.json',
+    title: 'F-16C Viper',
+    note: 'Официальный эталонный профиль FFBeast Community'
+  }
+};
+
 interface ProfileGeneratorProps {
   onNavigate?: (route: PageRoute) => void;
 }
@@ -97,7 +155,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   const [selectedAircraftId, setSelectedAircraftId] = useState<string>('dcs-su-27');
   const [lastRegularAircraftId, setLastRegularAircraftId] = useState<string>('dcs-su-27');
   const [searchQuery, setSearchQuery] = useState<string>('');
-  const [simFilter, setSimFilter] = useState<'all' | 'DCS World' | 'War Thunder' | 'helicopters' | 'props'>('all');
+  const [simFilter, setSimFilter] = useState<'all' | 'justfly' | 'DCS World' | 'War Thunder' | 'helicopters' | 'props'>('all');
   const [revision, setRevision] = useState<HardwareRevision>('V5');
   const [extensionMm, setExtensionMm] = useState<number>(100);
   const [maxForceKg, setMaxForceKg] = useState<number>(14.5);
@@ -164,6 +222,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
   const filteredAircraft = useMemo(() => {
     return AIRCRAFT_DATABASE.filter(ac => {
       // Filter by category or sim
+      if (simFilter === 'justfly' && !JUSTFLY_AIRCRAFT_MAP[ac.id]) return false;
       if (simFilter === 'DCS World' && ac.simName !== 'DCS World') return false;
       if (simFilter === 'War Thunder' && ac.simName !== 'War Thunder') return false;
       if (simFilter === 'helicopters' && !ac.isHelicopter && ac.category !== 'helicopter') return false;
@@ -470,6 +529,7 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
               <div className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl text-xs font-semibold liquid-glass-subtle border border-white/10">
                 {[
                   { id: 'all', label: 'Все модули' },
+                  { id: 'justfly', label: '🌟 JustFly (М. Савельев)' },
                   { id: 'DCS World', label: 'DCS World' },
                   { id: 'War Thunder', label: 'War Thunder' },
                   { id: 'helicopters', label: 'Вертолеты 🚁' },
@@ -514,7 +574,14 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                           : 'bg-white/5 border-white/10 text-slate-300 hover:border-white/20 hover:bg-white/10'
                       }`}
                     >
-                      <div className="font-bold truncate text-white">{ac.name}</div>
+                      <div className="flex items-center justify-between gap-1">
+                        <span className="font-bold truncate text-white">{ac.name}</span>
+                        {JUSTFLY_AIRCRAFT_MAP[ac.id] && (
+                          <span className="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 border border-cyan-400/30 shrink-0">
+                            JustFly
+                          </span>
+                        )}
+                      </div>
                       <div className="text-[10px] text-slate-400 mt-0.5 flex items-center justify-between">
                         <span>{ac.simName}</span>
                         <span className="font-mono text-sky-400 font-semibold">{ac.vMaxKmh} км/ч</span>
@@ -1130,6 +1197,32 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                   </div>
                 </div>
               </div>
+
+              {/* JustFly Authentic Author Profile Card */}
+              {JUSTFLY_AIRCRAFT_MAP[displayResult.aircraft.id] && (
+                <div className="bg-gradient-to-br from-cyan-950/40 via-sky-950/30 to-slate-900/60 border border-cyan-400/30 rounded-2xl p-4 space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                      <span>Калибровка JustFly (Максим Савельев)</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/20 px-2 py-0.5 rounded-full border border-cyan-400/30 font-semibold">
+                      Реальный пилот
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    Для этого борта доступен оригинальный профиль от Максима Савельева (JustFlyIt) с реальной летной кинематикой без искусственной аркадной тряски.
+                  </p>
+                  <a
+                    href={JUSTFLY_AIRCRAFT_MAP[displayResult.aircraft.id].file}
+                    download
+                    className="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer active:scale-[0.98]"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Скачать оригинальный .JSON от JustFly</span>
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Dynamic Aircraft Effort Visualizer */}
@@ -1482,6 +1575,18 @@ export const ProfileGenerator: React.FC<ProfileGeneratorProps> = ({ onNavigate }
                   <div>1. Нажмите кнопку <strong className="text-white">«Скачать .JSON»</strong>.</div>
                   <div>2. Поместите файл в папку <code className="text-cyan-300 font-bold bg-white/10 px-2 py-0.5 rounded border border-white/15">FFBeast Commander/effect_profiles/</code>.</div>
                   <div>3. В приложении FFBeast Commander выберите модуль и нажмите <strong className="text-white">Load Profile</strong>.</div>
+                </div>
+
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-[11px]">
+                  <span className="text-slate-400">Нужны сразу все авторские профили?</span>
+                  <a
+                    href="./profiles/JustFly_FFBeast_Profiles_Pack.zip"
+                    download="JustFly_FFBeast_Profiles_Pack.zip"
+                    className="text-cyan-300 hover:text-cyan-200 font-semibold underline flex items-center gap-1"
+                  >
+                    <Download className="w-3 h-3" />
+                    <span>Скачать архив JustFly (ZIP, 17 файлов)</span>
+                  </a>
                 </div>
               </div>
 

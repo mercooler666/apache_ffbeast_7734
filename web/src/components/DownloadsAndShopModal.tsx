@@ -1,5 +1,96 @@
 import React, { useState } from 'react';
-import { Download, ShoppingBag, ExternalLink, X, FileArchive, Key, Layers, Terminal } from 'lucide-react';
+import { Download, ShoppingBag, ExternalLink, X, FileArchive, Key, Layers, Sparkles, FileText } from 'lucide-react';
+
+const JUSTFLY_PROFILES = [
+  {
+    name: 'Su-27 Flanker',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Калибровка реального пилота. Динамическое АРУ скоростного напора, отсечка триммера, бафтинг щитка.',
+    file: './profiles/DCS_Su_27_From_JustFlyIt.json',
+    size: '57 KB'
+  },
+  {
+    name: 'MiG-29 Fulcrum',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Калибровка реального пилота. Ступенчатый упор бустера (detent), шейкер сваливания, живая полоса.',
+    file: './profiles/DCS_MiG_29_From_JustFlyIt.json',
+    size: '57 KB'
+  },
+  {
+    name: 'F/A-18C Hornet',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Характеристика пружинной загрузки ЭДСУ (FBW), отсечка триммера, бафтинг тормозного щитка.',
+    file: './profiles/DCS_FA_18C_From_JustFlyIt.json',
+    size: '57 KB'
+  },
+  {
+    name: 'F-5E Tiger II',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Чистое аэродинамическое затяжеление без искусственных аркадных шейкеров на ручке.',
+    file: './profiles/DCS_F_5E_From_JustFlyIt.json',
+    size: '12 KB'
+  },
+  {
+    name: 'Ми-8МТВ2',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Вертолетная кинематика от реального пилота. Снятие усилий по Force Trim, тряска косой обдувки 15–30 км/ч.',
+    file: './profiles/DCS_Mi_8_From_JustFlyIt.json',
+    size: '38 KB'
+  },
+  {
+    name: 'Ми-24П Hind',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Комбинированный Force Trim, демпфирование гидродемпферов SAS, толчки схода ракет и пушки.',
+    file: './profiles/DCS_Mi_24_From_JustFlyIt.json',
+    size: '44 KB'
+  },
+  {
+    name: 'UH-1H Huey',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: '2-лопастная характерная вибрация несущего винта (48 Гц), срыв потока на малой частоте, трение циклика.',
+    file: './profiles/DCS_UH_1_From_JustFlyIt.json',
+    size: '29 KB'
+  },
+  {
+    name: 'Spitfire LF Mk IX',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Ультра-чувствительный руль высоты, тяжелое сопротивление педалей на скорости, без лишних вибраций.',
+    file: './profiles/DCS_Spitfire_From_JustFlyIt.json',
+    size: '51 KB'
+  },
+  {
+    name: 'P-47D-30 / Mosquito',
+    author: 'JustFlyIt (Максим Савельев)',
+    type: 'Stick + Rudder',
+    desc: 'Тяжелое скоростное затяжеление на пикировании, реакция триммеров, толчки стопора хвостового колеса.',
+    file: './profiles/DCS_P_47D_From_JustFlyIt.json',
+    size: '51 KB'
+  },
+  {
+    name: 'F-14 Tomcat',
+    author: 'FFBeast Community',
+    type: 'Stick + Rudder',
+    desc: 'Обратимая механика с бобвейтами, тряска срыва компрессора и скачков плотности на трансзвуке.',
+    file: './profiles/DCS_F_14_From_FFBeast.json',
+    size: '52 KB'
+  },
+  {
+    name: 'F-16C Viper',
+    author: 'FFBeast Community',
+    type: 'Stick + Rudder',
+    desc: 'Короткоходный жесткий сайдстик ЭДСУ FLCS с прогрессией по перегрузке (G-force).',
+    file: './profiles/DCS_F_16C_From_FFBeast.json',
+    size: '50 KB'
+  }
+];
 
 interface DownloadsAndShopModalProps {
   isOpen: boolean;
@@ -286,31 +377,82 @@ export const DownloadsAndShopModal: React.FC<DownloadsAndShopModalProps> = ({
                   </a>
                 </div>
 
-                {/* Testing Utilities */}
-                <div className="liquid-glass-subtle rounded-2xl p-4 flex items-center justify-between border border-white/10">
-                  <div className="flex items-center gap-3">
-                    <Terminal className="w-6 h-6 text-amber-400" />
-                    <div>
-                      <div className="text-sm font-bold text-white">Диагностический пакет утилит</div>
-                      <div className="text-xs text-slate-400 mt-0.5">
-                        ForceTest.exe, JoystickTest.exe, VKB JoyTester, USBDeview
-                      </div>
+                {/* Official JustFly & Community Profiles Section */}
+              <div className="pt-4 border-t border-white/10 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <div className="text-sm font-bold text-white flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-cyan-400" />
+                      <span>Эталонные профили JustFly (Максим Савельев) & FFBeast</span>
+                    </div>
+                    <div className="text-xs text-slate-400 mt-0.5">
+                      Физически выверенные профили от реального пилота без аркадной искусственной тряски на ручке.
                     </div>
                   </div>
+
                   <a
-                    href="https://ffbeast.github.io/assets/firmware/ForceTest.exe"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/20 transition-colors shrink-0 shadow-lg"
+                    href="./profiles/JustFly_FFBeast_Profiles_Pack.zip"
+                    download="JustFly_FFBeast_Profiles_Pack.zip"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-lg transition-all shrink-0 cursor-pointer active:scale-[0.98]"
                   >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>ForceTest.exe</span>
+                    <Download className="w-4 h-4" />
+                    <span>Скачать весь пак (ZIP)</span>
                   </a>
                 </div>
 
+                {/* Profiles Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
+                  {JUSTFLY_PROFILES.map((p, idx) => (
+                    <div 
+                      key={idx}
+                      className="bg-white/[0.04] border border-white/10 hover:border-cyan-400/30 p-3.5 rounded-2xl flex flex-col justify-between transition-colors space-y-2.5"
+                    >
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-sm text-white">{p.name}</span>
+                          <span className="text-[10px] font-mono text-cyan-300 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-lg">
+                            {p.type}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 font-medium mt-0.5">
+                          {p.author}
+                        </div>
+                        <div className="text-[11px] text-slate-300 mt-1 leading-relaxed line-clamp-2">
+                          {p.desc}
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-[10px] font-mono text-slate-400">{p.size}</span>
+                        <a
+                          href={p.file}
+                          download
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold bg-white/10 hover:bg-white/20 text-white border border-white/15 transition-all cursor-pointer"
+                        >
+                          <Download className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>.JSON</span>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Generic Templates & Documentation Note */}
+                <div className="bg-white/[0.03] border border-white/10 p-3.5 rounded-2xl flex items-center justify-between text-xs text-slate-300">
+                  <div className="flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>
+                      Также в паке включены 4 универсальных шаблона (Джеты, Поршневые, Вертолеты) для FFBeast Commander.
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-slate-400 shrink-0 hidden sm:inline">
+                    Папка: effect_profiles/
+                  </span>
+                </div>
               </div>
 
             </div>
+          </div>
           )}
 
         </div>
