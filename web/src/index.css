@@ -1,39 +1,47 @@
-/* hallmark: 2.0.0 · theme: liquid-glass · variant: precision-aerospace · floor: pass */
-/* critique: authentic aerospace liquid glass UI with physical specular refraction, zero AI slop, dense telemetry */
+/* hallmark: 2.0.0 · theme: macos-liquid-glass · variant: vision-aerospace · floor: pass */
+/* critique: authentic macOS & visionOS Liquid Glass aesthetic with physical specular refraction, frosted depth, zero AI slop */
 
 @import "tailwindcss";
 
 :root {
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", 'Inter', system-ui, sans-serif;
+  --font-mono: "SF Mono", 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Monaco, Consolas, monospace;
 
-  /* Hallmark Liquid Glass Color & Surface Tokens */
-  --bg-page: #f8fafc;
-  --bg-surface-glass: rgba(255, 255, 255, 0.72);
-  --bg-surface-glass-hover: rgba(255, 255, 255, 0.88);
-  --bg-surface-glass-subtle: rgba(248, 250, 252, 0.65);
-  --bg-surface-glass-active: rgba(255, 255, 255, 0.96);
+  /* macOS Liquid Glass Dark Environment Tokens */
+  --bg-page: #080c14;
+  --bg-page-secondary: #0d121f;
 
-  --border-glass: rgba(255, 255, 255, 0.7);
-  --border-glass-subtle: rgba(226, 232, 240, 0.8);
-  --border-glass-active: rgba(2, 132, 199, 0.5);
+  /* Translucent Liquid Glass Surfaces (macOS/visionOS Physics) */
+  --glass-surface: rgba(255, 255, 255, 0.07);
+  --glass-surface-hover: rgba(255, 255, 255, 0.11);
+  --glass-surface-active: rgba(255, 255, 255, 0.16);
+  --glass-surface-subtle: rgba(255, 255, 255, 0.04);
+  --glass-surface-dark: rgba(10, 15, 26, 0.75);
 
-  --glass-rim: inset 0 1px 0 0 rgba(255, 255, 255, 0.95), inset 0 -1px 0 0 rgba(15, 23, 42, 0.03);
-  --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
-  --glass-shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  --glass-shadow-glow: 0 0 35px -5px rgba(2, 132, 199, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  /* Specular Rim & Borders */
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --glass-border-hover: rgba(255, 255, 255, 0.28);
+  --glass-border-subtle: rgba(255, 255, 255, 0.08);
+  --glass-border-active: rgba(56, 189, 248, 0.45);
+
+  /* Physical Edge Glints & Dual-Layer Shadows (Refraction Physics) */
+  --glass-rim: inset 0 1px 1px 0 rgba(255, 255, 255, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  --glass-rim-prominent: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.65), inset 0 -1px 1px 0 rgba(0, 0, 0, 0.4);
+  --glass-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.65), 0 8px 16px -4px rgba(0, 0, 0, 0.4);
+  --glass-shadow-lg: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 12px 24px -6px rgba(0, 0, 0, 0.5);
+  --glass-glow-cyan: 0 0 25px -4px rgba(56, 189, 248, 0.28);
+  --glass-glow-emerald: 0 0 25px -4px rgba(52, 211, 153, 0.28);
 
   /* Deep Glass Instrument Viewport */
-  --glass-instrument-bg: rgba(11, 19, 36, 0.92);
-  --glass-instrument-border: rgba(56, 189, 248, 0.22);
-  --glass-instrument-rim: inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+  --glass-instrument-bg: rgba(6, 10, 18, 0.85);
+  --glass-instrument-border: rgba(56, 189, 248, 0.25);
+  --glass-instrument-rim: inset 0 1px 0 0 rgba(255, 255, 255, 0.15);
 
   /* Aerospace Core Tones */
-  --color-sky-solid: #0284c7;
-  --color-sky-dark: #0369a1;
-  --color-sky-subtle: #e0f2fe;
-  --color-emerald-solid: #059669;
-  --color-amber-solid: #d97706;
+  --color-sky-solid: #38bdf8;
+  --color-sky-dark: #0284c7;
+  --color-emerald-solid: #34d399;
+  --color-amber-solid: #fbbf24;
 }
 
 html, body {
@@ -41,9 +49,37 @@ html, body {
   margin: 0;
   padding: 0;
   background-color: var(--bg-page);
-  color: #0f172a;
+  color: #f1f5f9;
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ambient organic glow backdrop */
+body::before {
+  content: '';
+  position: fixed;
+  top: -15%;
+  left: 20%;
+  width: 65vw;
+  height: 55vh;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.08) 0%, rgba(14, 165, 233, 0.02) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(80px);
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  bottom: 0%;
+  right: 15%;
+  width: 50vw;
+  height: 45vh;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.05) 0%, rgba(217, 119, 6, 0.015) 50%, transparent 80%);
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
 }
 
 /* Hallmark Rule 6: Focus-visible states appearing instantly */
@@ -68,38 +104,41 @@ html, body {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(241, 245, 249, 0.7);
+  background: rgba(15, 23, 42, 0.4);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(203, 213, 225, 0.8);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.9);
+  background: rgba(255, 255, 255, 0.28);
 }
 
-/* Liquid Glass Component Classes */
-.liquid-glass {
-  background: var(--bg-surface-glass);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--border-glass);
+/* macOS Liquid Glass Classes (Inspired by apple visionOS & liquid-glass-effect) */
+.liquid-glass, .liquid-glass-mac {
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--glass-rim), var(--glass-shadow);
 }
 
 .liquid-glass-subtle {
-  background: var(--bg-surface-glass-subtle);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid var(--border-glass-subtle);
-  box-shadow: var(--glass-rim), var(--glass-shadow);
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.015) 100%);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid var(--glass-border-subtle);
+  box-shadow: var(--glass-rim), 0 10px 25px -10px rgba(0, 0, 0, 0.4);
 }
 
 .liquid-glass-interactive {
-  background: var(--bg-surface-glass);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
-  border: 1px solid var(--border-glass);
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.025) 100%);
+  backdrop-filter: blur(36px) saturate(200%);
+  -webkit-backdrop-filter: blur(36px) saturate(200%);
+  border: 1px solid var(--glass-border);
   box-shadow: var(--glass-rim), var(--glass-shadow);
   transition-property: background-color, border-color, box-shadow, transform;
   transition-duration: 150ms;
@@ -107,9 +146,9 @@ html, body {
 }
 
 .liquid-glass-interactive:hover {
-  background: var(--bg-surface-glass-hover);
-  border-color: rgba(255, 255, 255, 0.95);
-  box-shadow: var(--glass-rim), var(--glass-shadow-lg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.05) 100%);
+  border-color: var(--glass-border-hover);
+  box-shadow: var(--glass-rim-prominent), var(--glass-shadow-lg);
 }
 
 .liquid-glass-interactive:active {
@@ -117,17 +156,57 @@ html, body {
 }
 
 .liquid-glass-dark {
+  position: relative;
   background: var(--glass-instrument-bg);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(32px) saturate(190%);
+  -webkit-backdrop-filter: blur(32px) saturate(190%);
   border: 1px solid var(--glass-instrument-border);
-  box-shadow: var(--glass-instrument-rim), 0 20px 40px -15px rgba(2, 6, 23, 0.35);
+  box-shadow: var(--glass-instrument-rim), 0 24px 48px -12px rgba(0, 0, 0, 0.75);
 }
 
 .liquid-glass-pill {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 6px rgba(15, 23, 42, 0.04);
+  position: relative;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.04) 100%);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: var(--glass-rim-prominent), 0 12px 28px -6px rgba(0, 0, 0, 0.55);
+}
+
+/* Glass glint corner gleam (like Image 2 reference) */
+.liquid-glint::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 5%, rgba(255, 255, 255, 0.6) 20%, rgba(255, 255, 255, 0.9) 35%, rgba(255, 255, 255, 0.4) 50%, transparent 85%);
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Glowing LED indicator (like Image 1 reference) */
+.mac-led-green {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background-color: #34d399;
+  box-shadow: 0 0 10px #34d399, 0 0 2px #34d399;
+}
+
+.mac-led-cyan {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background-color: #38bdf8;
+  box-shadow: 0 0 10px #38bdf8, 0 0 2px #38bdf8;
+}
+
+.mac-led-amber {
+  width: 9px;
+  height: 9px;
+  border-radius: 9999px;
+  background-color: #fbbf24;
+  box-shadow: 0 0 10px #fbbf24, 0 0 2px #fbbf24;
 }
