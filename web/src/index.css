@@ -173,14 +173,13 @@ body::after {
   box-shadow: var(--glass-rim-prominent), 0 12px 28px -6px rgba(0, 0, 0, 0.55);
 }
 
-/* Opaque & Maximally Frosted Top Navigation Bar (User Request: максимально мыльный, не прозрачный) */
+/* 100% Opaque & Crisp Top Navigation Bar (User Request: Верхнюю нав панель сделать непрозрачной) */
 .liquid-navbar-frosted {
   position: relative;
-  background: rgba(8, 12, 20, 0.94);
-  backdrop-filter: blur(48px) saturate(220%);
-  -webkit-backdrop-filter: blur(48px) saturate(220%);
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.45), 0 24px 48px -12px rgba(0, 0, 0, 0.85);
+  background-color: #080c14 !important;
+  background: #080c14 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: inset 0 1.5px 1.5px 0 rgba(255, 255, 255, 0.5), 0 25px 50px -12px rgba(0, 0, 0, 0.95) !important;
 }
 
 /* Glass glint corner gleam (like Image 2 reference) */
